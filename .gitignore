@@ -1,0 +1,6 @@
+**/CVS/
+.cvsignore
+*.png
+event_selection/
+sidebands/
+util/
