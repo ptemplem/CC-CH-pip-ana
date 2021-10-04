@@ -135,6 +135,8 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetEpiTrueMatched(RecoPionIdx) const;
   virtual double GetCalRecoilEnergyNoPiTrue() const;
 
+  // mc_initNucVec // initial nucleon momentum
+
   // Dummy access for variable constructors
   virtual double GetDummyVar() const;
   virtual double GetDummyHadVar(const int x) const;
