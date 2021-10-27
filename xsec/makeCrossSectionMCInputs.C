@@ -31,6 +31,10 @@ typedef Variable Var;
 typedef HadronVariable HVar;
 
 std::vector<Variable*> GetOnePiVariables(bool include_truth_vars = true) {
+  const int nehadbins = 25;
+  const double ehadmin = 200.;
+  const double ehadmax = 1800.;
+
   HVar* tpi = new HVar("tpi", "T_{#pi}", "MeV", CCPi::GetBinning("tpi"),
                        &CVUniverse::GetTpi);
 
@@ -105,10 +109,14 @@ std::vector<Variable*> GetOnePiVariables(bool include_truth_vars = true) {
   Var* pzmu_true =
       new Var("pzmu_true", "pz_{#mu} True", "MeV", pzmu->m_hists.m_bins_array,
               &CVUniverse::GetPZmuTrue, is_true);
+  // Ehad variables
+  Var* ehad      = new Var("ehad",      "ehad",      "MeV", nehadbins, ehadmin, ehadmax, &CVUniverse::GetEhad);
+  Var* ehad_true = new Var("ehad_true", "ehad_true", "MeV", nehadbins, ehadmin, ehadmax, &CVUniverse::GetEhadTrue);
+  ehad_true->m_is_true = true;
 
   std::vector<Var*> variables = {tpi,         tpi_mbr, thetapi_deg, pmu,
                                  thetamu_deg, enu,     q2,          wexp,
-                                 wexp_fit,    ptmu,    pzmu};
+                                 wexp_fit,    ptmu,    pzmu,        ehad};
 
   if (include_truth_vars) {
     variables.push_back(tpi_true);
@@ -120,6 +128,7 @@ std::vector<Variable*> GetOnePiVariables(bool include_truth_vars = true) {
     variables.push_back(wexp_true);
     variables.push_back(ptmu_true);
     variables.push_back(pzmu_true);
+    variables.push_back(ehad_true);
   }
 
   return variables;
