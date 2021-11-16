@@ -84,6 +84,9 @@ namespace systematics {
 
         error_bands[std::string("BeamAngle")].push_back(
             new BeamAngleShiftCVUniverse(chain, sigma));
+
+	error_bands[std::string("NodeCutEff")].push_back(
+	    new NodeCutEffUniverse(chain, sigma));
       }
 
       //========================================================================

@@ -185,6 +185,9 @@ double CVUniverse::GetPXpi(RecoPionIdx hadron) const {
 double CVUniverse::GetPYpi(RecoPionIdx hadron) const {
   return GetVecElem("MasterAnaDev_pion_Py", hadron);
 }
+double CVUniverse::GetPpi(RecoPionIdx hadron) const {
+  return GetVecElem("MasterAnaDev_pion_P", hadron);
+}
 
 double CVUniverse::Gett(RecoPionIdx h) const {
   ROOT::Math::PxPyPzEVector mu4v = GetMuon4V();
@@ -425,7 +428,6 @@ double CVUniverse::GetCalRecoilEnergyNoPiTrue() const {
 double CVUniverse::GetMichelProngOv( int iMM )  const { return GetVecElem("matched_michel_ov_dist" , iMM)/10; }
 double CVUniverse::GetMichelProngAvg( int iMM ) const { return GetVecElem("matched_michel_avg_dist", iMM)/10; }
 double CVUniverse::GetMichelProngEnd( int iMM ) const { return GetVecElem("matched_michel_end_dist", iMM)/10; }
-
 
 //==============================
 // Misc
@@ -699,6 +701,11 @@ void CVUniverse::PrintArachneLink() const {
   // memcpy();  // FAIL
   std::cout << link << std::endl;
 }
+
+//void SetResPionIdx( std::vector<int> &pion_idx ) const { m_non_cal_idx = pion_idx;} 
+//std::vector<int> GetResPionIdx( ) const { return m_non_cal_idx; }
+//int GetNResPions( ) const { return m_non_cal_idx.size(); }
+
 
 //==============================================================================
 // Get and set pion candidates

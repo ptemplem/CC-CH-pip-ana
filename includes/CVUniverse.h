@@ -10,7 +10,7 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
  private:
   // Pion Candidates - clear these when SetEntry is called
   std::vector<RecoPionIdx> m_pion_candidates;
-
+//std::vector<int> m_non_cal_idx;
  public:
 #include "PlotUtils/MuonFunctions.h"
 #include "PlotUtils/TruthFunctions.h"
@@ -67,6 +67,7 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetPZpi(RecoPionIdx) const;
   virtual double GetPXpi(RecoPionIdx) const;
   virtual double GetPYpi(RecoPionIdx) const;
+  virtual double GetPpi(RecoPionIdx) const;
 
   virtual double Gett(RecoPionIdx) const;
 
@@ -122,6 +123,10 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetMichelProngOv( int iMM )  const;
   virtual double GetMichelProngAvg( int iMM ) const;
   virtual double GetMichelProngEnd( int iMM ) const;
+
+//virtual void SetResPionIdx( std::vector<int> &pion_idx );
+//virtual std::vector<int> GetResPionIdx( );
+//virtual int GetNResPions( ) const;
 
   // Dummy access for variable constructors
   virtual double GetDummyVar() const;

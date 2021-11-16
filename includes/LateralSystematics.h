@@ -158,11 +158,12 @@ class NodeCutEffUniverse: public CVUniverse {
 
       //I don't really want to put in the prong for such a small reweight
       //Leading pion
+
       double eff_weight = 1.;
-      if( GetNResPions() > 0 )
+      if( CVUniverse::GetPionCandidates().size() > 0 )
       {
          double Tpi = 0;
-         for( auto idx : m_non_cal_idx )
+         for( auto idx : CVUniverse::GetPionCandidates() )
          {
            double tmp_tpi = CVUniverse::GetTpi( idx )/1000;
            Tpi = tmp_tpi > Tpi ? tmp_tpi : Tpi;
@@ -174,7 +175,7 @@ class NodeCutEffUniverse: public CVUniverse {
     }
     virtual std::string ShortName() const { return "NodeCutEff"; }
     virtual std::string LatexName() const { return "Node Cut Efficiency"; }
-    virtual bool IsVerticalOnly()  const  { return true; }override
+    virtual bool IsVerticalOnly()  const  { return true; }/*override*/
 };
 
 #endif // LateralSystematics_H

@@ -27,8 +27,8 @@ kGRID_OPTIONS     = ("--group=minerva "
                     )
 
 # Misc
-#kPLAYLISTS        = ["ME1A","ME1B","ME1C","ME1D","ME1E","ME1F", "ME1G", "ME1L", "ME1M", "ME1N", "ME1O", "ME1P"]
-kPLAYLISTS        = ["ME1A","ME1B","ME1C","ME1D"]
+kPLAYLISTS        = ["ME1A","ME1B","ME1C","ME1D","ME1E","ME1F", "ME1G", "ME1L", "ME1M", "ME1N", "ME1O", "ME1P"]
+#kPLAYLISTS        = ["ME1A","ME1B","ME1C","ME1D"]
 kFILETAG          = ""
 
 
