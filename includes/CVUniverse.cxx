@@ -421,6 +421,12 @@ double CVUniverse::GetCalRecoilEnergyNoPiTrue() const {
   return nopi_recoilE;
 }
 
+
+double CVUniverse::GetMichelProngOv( int iMM )  const { return GetVecElem("matched_michel_ov_dist" , iMM)/10; }
+double CVUniverse::GetMichelProngAvg( int iMM ) const { return GetVecElem("matched_michel_avg_dist", iMM)/10; }
+double CVUniverse::GetMichelProngEnd( int iMM ) const { return GetVecElem("matched_michel_end_dist", iMM)/10; }
+
+
 //==============================
 // Misc
 //==============================

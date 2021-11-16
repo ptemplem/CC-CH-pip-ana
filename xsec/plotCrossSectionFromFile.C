@@ -47,7 +47,7 @@ void SetPOT(TFile& fin, CCPi::MacroUtil& util) {
 //==============================================================================
 // Main
 //==============================================================================
-void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 0) {
+void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1) {
   // Infiles
     TFile fin("DataXSecInputs_20211012_Ehad.root", "READ");
     cout << "Reading input from " << fin.GetName() << endl;
@@ -212,7 +212,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 0
   // PLOT Event Selection, BGs (error)
   if (true) {
     const bool do_frac_unc  = true;
-    const bool include_stat = true;
+    const bool include_stat = false;
     bool do_cov_area_norm   = false;
     for (auto var : variables) {
       std::cout << var->Name() << "\n";
@@ -241,7 +241,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 0
   // PLOT Efficiency & Migration
   if (true) {
     const bool do_frac_unc  = true;
-    const bool include_stat = true;
+    const bool include_stat = false;
     const bool do_cov_area_norm   = false;
 
     for (auto var : variables) {
@@ -278,7 +278,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 0
   // PLOT Background Subtraction
   if (true) {
     const bool do_frac_unc      = true;
-    const bool include_stat     = true;
+    const bool include_stat     = false;
     const bool do_cov_area_norm = false;
     for (auto var : variables) {
       if (var->m_is_true) continue;
@@ -306,7 +306,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 0
   if (true) {
     const bool do_frac_unc      = true;
     const bool do_cov_area_norm = false;
-    const bool include_stat     = true;
+    const bool include_stat     = false;
 
     EventSelectionPlotInfo plot_info(util.m_mc_pot, util.m_data_pot, do_frac_unc, do_cov_area_norm, include_stat, util.m_signal_definition);
 
@@ -321,7 +321,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 0
   // PLOT unfolded
   if (true) {
     const bool do_frac_unc       = true;
-    const bool include_stat      = true;
+    const bool include_stat      = false;
     const bool do_cov_area_norm  = false;
     const double ymax            = -1.;
     const bool do_log_scale      = false;
@@ -341,7 +341,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 0
   // PLOT cross section
   if (true) {
     const bool do_frac_unc       = true;
-    const bool include_stat      = true;
+    const bool include_stat      = false;
     const bool do_cov_area_norm  = false;
     const double ymax            = -1.;
     const bool do_log_scale      = false;

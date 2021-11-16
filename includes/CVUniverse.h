@@ -118,6 +118,11 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetEpiTrueMatched(RecoPionIdx) const;
   virtual double GetCalRecoilEnergyNoPiTrue() const;
 
+  //Michel Variable for Aaron's Systematics
+  virtual double GetMichelProngOv( int iMM )  const;
+  virtual double GetMichelProngAvg( int iMM ) const;
+  virtual double GetMichelProngEnd( int iMM ) const;
+
   // Dummy access for variable constructors
   virtual double GetDummyVar() const;
   virtual double GetDummyHadVar(const int x) const;
