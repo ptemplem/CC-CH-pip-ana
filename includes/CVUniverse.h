@@ -10,7 +10,6 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
  private:
   // Pion Candidates - clear these when SetEntry is called
   std::vector<RecoPionIdx> m_pion_candidates;
-//std::vector<int> m_non_cal_idx;
  public:
 #include "PlotUtils/MuonFunctions.h"
 #include "PlotUtils/TruthFunctions.h"
@@ -118,15 +117,6 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetTpiTrueMatched(RecoPionIdx) const;
   virtual double GetEpiTrueMatched(RecoPionIdx) const;
   virtual double GetCalRecoilEnergyNoPiTrue() const;
-
-  //Michel Variable for Aaron's Systematics
-  virtual double GetMichelProngOv( int iMM )  const;
-  virtual double GetMichelProngAvg( int iMM ) const;
-  virtual double GetMichelProngEnd( int iMM ) const;
-
-//virtual void SetResPionIdx( std::vector<int> &pion_idx );
-//virtual std::vector<int> GetResPionIdx( );
-//virtual int GetNResPions( ) const;
 
   // Dummy access for variable constructors
   virtual double GetDummyVar() const;

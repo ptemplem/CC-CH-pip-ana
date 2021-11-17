@@ -49,10 +49,10 @@ void SetPOT(TFile& fin, CCPi::MacroUtil& util) {
 //==============================================================================
 void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1) {
   // Infiles
-    TFile fin("DataXSecInputs_20211012_Ehad.root", "READ");
+    TFile fin("DataXSecInputs_20211012.root", "READ");
     cout << "Reading input from " << fin.GetName() << endl;
    
-    TFile finCCPi("../ME_CCPionInc_Ana/DataXSec_20210901_Ehad.root", "READ");
+    TFile finCCPi("DataXSecInputs_20211012.root", "READ");
 //    TFile finCCPi("/minerva/app/users/granados/cmtuser/Minerva_v22r1p1_CCPionInc/Ana/CCPionInc/ana/ME_CCNuPionInc_Ana/DataXSec_20211010_NewTupla.root", "READ");
 
 //    TFile finCCPi("../ME_CCNuPionInc_Ana/DataXSec_20210901_CCPi.root", "READ");
@@ -116,7 +116,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1
   }
 
   //Ratios MAD and CCPionInc
-    if(true){
+    if(false){
     const bool do_frac_unc  = true;
     const bool include_stat = false;
     bool do_cov_area_norm   = false;
@@ -144,9 +144,9 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1
     std::cout << "data Norm = " << utilCCPi.m_data_pot/util.m_data_pot << "\n";    
  
     std::cout << "POT Scale = " << util.m_pot_scale << "\n"; 
-    util.m_pot_scale = util.m_pot_scale*(1/MC_MADCCPinorm);
-    util.m_mc_pot = util.m_mc_pot*(1/MC_MADCCPinorm);
-    util.m_data_pot = util.m_data_pot*(1/data_MADCCPinorm);
+    util.m_pot_scale = util.m_pot_scale*MC_MADCCPinorm;
+    util.m_mc_pot = util.m_mc_pot*MC_MADCCPinorm;
+    util.m_data_pot = util.m_data_pot*data_MADCCPinorm;
 
     std::vector<std::string> sec;
     sec.push_back("selection_data");
@@ -212,7 +212,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1
   // PLOT Event Selection, BGs (error)
   if (true) {
     const bool do_frac_unc  = true;
-    const bool include_stat = false;
+    const bool include_stat = true;
     bool do_cov_area_norm   = false;
     for (auto var : variables) {
       std::cout << var->Name() << "\n";
@@ -241,7 +241,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1
   // PLOT Efficiency & Migration
   if (true) {
     const bool do_frac_unc  = true;
-    const bool include_stat = false;
+    const bool include_stat = true;
     const bool do_cov_area_norm   = false;
 
     for (auto var : variables) {
@@ -278,7 +278,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1
   // PLOT Background Subtraction
   if (true) {
     const bool do_frac_unc      = true;
-    const bool include_stat     = false;
+    const bool include_stat     = true;
     const bool do_cov_area_norm = false;
     for (auto var : variables) {
       if (var->m_is_true) continue;
@@ -306,7 +306,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1
   if (true) {
     const bool do_frac_unc      = true;
     const bool do_cov_area_norm = false;
-    const bool include_stat     = false;
+    const bool include_stat     = true;
 
     EventSelectionPlotInfo plot_info(util.m_mc_pot, util.m_data_pot, do_frac_unc, do_cov_area_norm, include_stat, util.m_signal_definition);
 
@@ -321,7 +321,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1
   // PLOT unfolded
   if (true) {
     const bool do_frac_unc       = true;
-    const bool include_stat      = false;
+    const bool include_stat      = true;
     const bool do_cov_area_norm  = false;
     const double ymax            = -1.;
     const bool do_log_scale      = false;
@@ -341,7 +341,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0, int plot_errors = 1
   // PLOT cross section
   if (true) {
     const bool do_frac_unc       = true;
-    const bool include_stat      = false;
+    const bool include_stat      = true;
     const bool do_cov_area_norm  = false;
     const double ymax            = -1.;
     const bool do_log_scale      = false;

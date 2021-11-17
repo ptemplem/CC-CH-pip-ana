@@ -197,8 +197,6 @@ void LoopAndFillMCXSecInputs(const CCPi::MacroUtil& util,
       std::vector<CVUniverse*> universes = error_band.second;
       for (auto universe : universes) {
         universe->SetEntry(i_event);
-	//std::vector<int> res_pion_idx = getResolutionPionIndices(universe);
-	//universe->SetResPionIdx( res_pion_idx );
         // if (universe->GetDouble("mc_incoming") == 12 && universe->ShortName()
         // =="cv")
         //  universe->PrintArachneLink();
