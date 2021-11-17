@@ -148,6 +148,7 @@ void SetErrorGroups(MnvPlotter& mnv_plotter) {
   mnv_plotter.error_summary_group_map["Detector"].push_back("PartResp");
   mnv_plotter.error_summary_group_map["Detector"].push_back("TrackAngle");
   mnv_plotter.error_summary_group_map["Detector"].push_back("BeamAngle");
+  mnv_plotter.error_summary_group_map["Detector"].push_back("NodeCutEff");
 
   mnv_plotter.error_summary_group_map["RPA"].push_back("RPA_LowQ2");
   mnv_plotter.error_summary_group_map["RPA"].push_back("RPA_HighQ2");
