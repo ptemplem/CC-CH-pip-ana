@@ -15,7 +15,13 @@
 #include "PlotUtils/MnvTuneSystematics.h"
 #include "PlotUtils/MinosEfficiencySystematics.h"
 #include "PlotUtils/MuonSystematics.h"
-//#include "PlotUtils/ResponseSystematics.h"
+#include "PlotUtils/AngleSystematics.h"
+#include "PlotUtils/GeantHadronSystematics.h"
+#include "PlotUtils/ResponseSystematics.h"
+#include "PlotUtils/NSFDefaults.h"
+#include "PlotUtils/MuonResolutionSystematics.h"
+#include "PlotUtils/MichelSystematics.h"
+#include "PlotUtils/TargetMassSystematics.h"
 
 #include "Constants.h" // typedefs UniverseMap
 #include "CVUniverse.h"
@@ -86,7 +92,7 @@ namespace systematics {
             new BeamAngleShiftCVUniverse(chain, sigma));
 
 	error_bands[std::string("NodeCutEff")].push_back(
-	    new NodeCutEffUniverse(chain, sigma));
+            new NodeCutEffUniverse(chain, sigma));
       }
 
 //      UniverseMap geant_bands = 
@@ -150,29 +156,29 @@ namespace systematics {
       // Muons
       //========================================================================
       ////Angle systematics
-//    UniverseMap angle_error_bands = 
-// PlotUtils::GetAngleSystematicsMap<CVUniverse>(chain);
-//    error_bands.insert(angle_error_bands.begin(), angle_error_bands.end());
+      UniverseMap angle_error_bands = 
+          PlotUtils::GetAngleSystematicsMap<CVUniverse>(chain);
+      error_bands.insert(angle_error_bands.begin(), angle_error_bands.end());
 
       ////Muon Angle systematics
-//    UniverseMap muon_angle_error_bands =
-// PlotUtils::GetMuonAngleResolutionSystematicsMap<CVUniverse>(chain);
-//    error_bands.insert(muon_angle_error_bands.begin(), muon_angle_error_bands.end());
+      UniverseMap muon_angle_error_bands =
+          PlotUtils::GetMuonAngleResolutionSystematicsMap<CVUniverse>(chain);
+      error_bands.insert(muon_angle_error_bands.begin(), muon_angle_error_bands.end());
 
       //// MUON - MINERvA
-///   UniverseMap bands_muon_minerva =
-///       PlotUtils::GetMinervaMuonSystematicsMap<CVUniverse>(chain);
-//    error_bands.insert(bands_muon_minerva.begin(), bands_muon_minerva.end());
+      UniverseMap bands_muon_minerva =
+          PlotUtils::GetMinervaMuonSystematicsMap<CVUniverse>(chain);
+      error_bands.insert(bands_muon_minerva.begin(), bands_muon_minerva.end());
 
       //// MUON - MINOS
-//    UniverseMap bands_muon_minos =
-//        PlotUtils::GetMinosMuonSystematicsMap<CVUniverse>(chain);
-//    error_bands.insert(bands_muon_minos.begin(), bands_muon_minos.end());
+      UniverseMap bands_muon_minos =
+          PlotUtils::GetMinosMuonSystematicsMap<CVUniverse>(chain);
+      error_bands.insert(bands_muon_minos.begin(), bands_muon_minos.end());
 
       //// MINOS EFFICIENCY
-//    UniverseMap bands_minoseff =
-//        PlotUtils::GetMinosEfficiencySystematicsMap<CVUniverse>(chain);
-//    error_bands.insert(bands_minoseff.begin(), bands_minoseff.end());
+      UniverseMap bands_minoseff =
+          PlotUtils::GetMinosEfficiencySystematicsMap<CVUniverse>(chain);
+      error_bands.insert(bands_minoseff.begin(), bands_minoseff.end());
 
       //// Minos Efficiency Correction       
 //    std::vector<CVUniverse*> error_bands_minos = 
@@ -180,9 +186,9 @@ namespace systematics {
 //    error_bands[std::string("MinosEfficiency")] = error_bands_minos;
 
       //Muon Resolution systematics       
-//    UniverseMap muon_res_error_bands =
-//  	  PlotUtils::GetMuonResolutionSystematicsMap<CVUniverse>(chain);
-//    error_bands.insert(muon_res_error_bands.begin(), muon_res_error_bands.end());
+      UniverseMap muon_res_error_bands =
+    	  PlotUtils::GetMuonResolutionSystematicsMap<CVUniverse>(chain);
+      error_bands.insert(muon_res_error_bands.begin(), muon_res_error_bands.end());
 
       //========================================================================
       // Particle Response
@@ -200,14 +206,20 @@ namespace systematics {
 //        PlotUtils::GetMichelEfficiencySystematicsMap<CVUniverse>(chain);
 //    error_bands.insert(michel_error_bands.begin(), michel_error_bands.end());
 
-    //// SB Fit errors
-    //    UniverseMap sb_fit_error_bands = GetSBFitMap(chain);
-    //        error_bands.insert(sb_fit_error_bands.begin(), sb_fit_error_bands.end());      
+      //========================================================================
+      //Diffractive pion production unc
+      //========================================================================
+//    UniverseMap error_bands_cohdiff = 
+//        GetCohDiffractiveSystematicsMap( chain );
+//     error_bands.insert(error_bands_cohdiff.begin(), error_bands_cohdiff.end());
+    
+      //========================================================================
+      //Target Mass errors
+      //========================================================================
+//    UniverseMap error_bands_tarmass = 
+//        GetTargetMassSystematicsMap<CVUniverse>( chain );
+//    error_bands.insert(error_bands_tarmass.begin(), error_bands_tarmass.end());
 
-    //Diffractive pion production unc
-    //        UniverseMap error_bands_cohdiff = GetCohDiffractiveSystematicsMap( chain );
-    //            error_bands.insert(error_bands_cohdiff.begin(), error_bands_cohdiff.end());
-    //
 
     }
 

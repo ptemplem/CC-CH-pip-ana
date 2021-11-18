@@ -197,11 +197,12 @@ void LoopAndFillMCXSecInputs(const CCPi::MacroUtil& util,
       std::vector<CVUniverse*> universes = error_band.second;
       for (auto universe : universes) {
         universe->SetEntry(i_event);
+	//std::cout << universe->ShortName() << "\n";
         // if (universe->GetDouble("mc_incoming") == 12 && universe->ShortName()
         // =="cv")
         //  universe->PrintArachneLink();
         CCPiEvent event(is_mc, is_truth, util.m_signal_definition, universe);
-
+	//std::cout << event.m_weight <<
         //===============
         // FILL TRUTH
         //===============
@@ -236,11 +237,21 @@ void LoopAndFillMCXSecInputs(const CCPi::MacroUtil& util,
           event.m_highest_energy_pion_idx =
               GetHighestEnergyPionCandidateIndex(event);
         }
-
+/*        if(event.m_passes_cuts) {
+          std::cout << cv_reco_pion_candidate_idxs.size() << "  " << event.m_reco_pion_candidate_idxs.size() << "\n";
+        }*/
         // save pion candidate to the universe object itself -- needed for new
         // hadronic energy calculation.
         universe->SetPionCandidates(event.m_reco_pion_candidate_idxs);
-
+/*	if(event.m_passes_cuts) {
+          std::cout << universe->GetPionCandidates().size() << "\n";
+        }
+        if (event.m_passes_cuts && universe->ShortName() == "NodeCutEff"){
+//      if (event.m_passes_cuts ){
+	    std::cout << "Size of Pion candidates Vector makeCrossSectionMCInputs = " << universe->GetPionCandidates().size() << "\n";
+	    event.m_weight = universe->GetWeight();
+	}*/
+//	if (!event.m_passes_cuts) continue;
         //===============
         // FILL RECO
         //===============

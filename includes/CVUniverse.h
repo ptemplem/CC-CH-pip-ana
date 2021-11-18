@@ -69,6 +69,8 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetPpi(RecoPionIdx) const;
 
   virtual double Gett(RecoPionIdx) const;
+   
+  virtual int GetNhadrons() const;
 
   // With these truth hadron variables, SEE the warning in the .cxx
   virtual double GetTpiTrue(TruePionIdx) const;

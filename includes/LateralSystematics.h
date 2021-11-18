@@ -152,25 +152,30 @@ class NodeCutEffUniverse: public CVUniverse {
     NodeCutEffUniverse(PlotUtils::ChainWrapper* chw, double nsigma)
       : CVUniverse(chw, nsigma)
     {}
-
-    virtual double GetWeight() {
-      if(IsTruth()) return CVUniverse::GetWeight();
-
+    
+    virtual double GetWeight() const override {
+      if(IsTruth()){
+	return CVUniverse::GetWeight();
+      }
       //I don't really want to put in the prong for such a small reweight
       //Leading pion
 
       double eff_weight = 1.;
+//      std::cout << "Number of Pion candidates = " << CVUniverse::GetPionCandidates().size() << "   Number of hadron tracks = " << CVUniverse::GetNhadrons() << "\n";
       if( CVUniverse::GetPionCandidates().size() > 0 )
       {
-         double Tpi = 0;
-         for( auto idx : CVUniverse::GetPionCandidates() )
+         double Tpi = CVUniverse::GetTpi(CVUniverse::GetHighestEnergyPionCandidateIndex(CVUniverse::GetPionCandidates()))/1000;
+
+/*         for( auto idx : CVUniverse::GetPionCandidates() )
          {
            double tmp_tpi = CVUniverse::GetTpi( idx )/1000;
            Tpi = tmp_tpi > Tpi ? tmp_tpi : Tpi;
-         }
+         }*/
          if( Tpi < 0.15 ) eff_weight *= ( 1 + m_nsigma*0.0015);
          if( Tpi > 0.15 ) eff_weight *= ( 1 + m_nsigma*0.01);
       }
+//      else std:cout << "WARNING: No pion Candidates" << "\n";
+//      std::cout << "CV Weight = " << CVUniverse::GetWeight() << " CVweight*eff_weight = "<< eff_weight*CVUniverse::GetWeight() << "\n";
       return eff_weight*CVUniverse::GetWeight();
     }
     virtual std::string ShortName() const { return "NodeCutEff"; }

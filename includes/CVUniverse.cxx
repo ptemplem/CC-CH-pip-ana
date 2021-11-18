@@ -195,6 +195,10 @@ double CVUniverse::Gett(RecoPionIdx h) const {
                mu4v.Py(), mu4v.Pz(), GetEmu());
 }
 
+int CVUniverse::GetNhadrons() const {
+  return GetInt("MasterAnaDev_hadron_number");
+}
+
 // True (always MeV, radians)
 // Get TRUE Hadron Quantities (always MeV, radians)
 // NOTE: These 'truth_pi_*' containers all have 20 elements
