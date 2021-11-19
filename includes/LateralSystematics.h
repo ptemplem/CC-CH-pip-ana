@@ -147,40 +147,33 @@ class BeamAngleShiftCVUniverse : public CVUniverse {
     virtual std::string LatexName() const { return "Beam Angle"; }
 };
 
-class NodeCutEffUniverse: public CVUniverse {
-  public:
-    NodeCutEffUniverse(PlotUtils::ChainWrapper* chw, double nsigma)
-      : CVUniverse(chw, nsigma)
-    {}
-    
-    virtual double GetWeight() const override {
-      if(IsTruth()){
-	return CVUniverse::GetWeight();
-      }
-      //I don't really want to put in the prong for such a small reweight
-      //Leading pion
+class NodeCutEffUniverse : public CVUniverse {
+ public:
+  NodeCutEffUniverse(PlotUtils::ChainWrapper* chw, double nsigma)
+      : CVUniverse(chw, nsigma) {}
 
-      double eff_weight = 1.;
-//      std::cout << "Number of Pion candidates = " << CVUniverse::GetPionCandidates().size() << "   Number of hadron tracks = " << CVUniverse::GetNhadrons() << "\n";
-      if( CVUniverse::GetPionCandidates().size() > 0 )
-      {
-         double Tpi = CVUniverse::GetTpi(CVUniverse::GetHighestEnergyPionCandidateIndex(CVUniverse::GetPionCandidates()))/1000;
+  virtual double GetWeight() const override {
+    if (IsTruth())
+      return CVUniverse::GetWeight();
 
-/*         for( auto idx : CVUniverse::GetPionCandidates() )
-         {
-           double tmp_tpi = CVUniverse::GetTpi( idx )/1000;
-           Tpi = tmp_tpi > Tpi ? tmp_tpi : Tpi;
-         }*/
-         if( Tpi < 0.15 ) eff_weight *= ( 1 + m_nsigma*0.0015);
-         if( Tpi > 0.15 ) eff_weight *= ( 1 + m_nsigma*0.01);
-      }
-//      else std:cout << "WARNING: No pion Candidates" << "\n";
-//      std::cout << "CV Weight = " << CVUniverse::GetWeight() << " CVweight*eff_weight = "<< eff_weight*CVUniverse::GetWeight() << "\n";
-      return eff_weight*CVUniverse::GetWeight();
+    // I don't really want to put in the prong for such a small reweight
+    // Leading pion
+    double eff_weight = 1.;
+    if (CVUniverse::GetPionCandidates().size() > 0) {
+      double Tpi =
+          CVUniverse::GetTpi(CVUniverse::GetHighestEnergyPionCandidateIndex(CVUniverse::GetPionCandidates())) /
+          1000;
+
+      if (Tpi < 0.15) eff_weight *= (1 + m_nsigma * 0.0015);
+      if (Tpi > 0.15) eff_weight *= (1 + m_nsigma * 0.01);
     }
-    virtual std::string ShortName() const { return "NodeCutEff"; }
-    virtual std::string LatexName() const { return "Node Cut Efficiency"; }
-    virtual bool IsVerticalOnly()  const  { return true; }/*override*/
+    return eff_weight * CVUniverse::GetWeight();
+  }
+  virtual std::string ShortName() const override { return "NodeCutEff"; }
+  virtual std::string LatexName() const override {
+    return "Node Cut Efficiency";
+  }
+  virtual bool IsVerticalOnly() const override { return true; }
 };
 
 #endif // LateralSystematics_H
