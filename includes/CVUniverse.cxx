@@ -20,35 +20,34 @@ CVUniverse::CVUniverse(PlotUtils::ChainWrapper* chw, double nsigma)
 //==============================================================================
 //==============================
 // Muon Variables
-// A lot of these are now defined in DCVU, but I'm not yet confident that
-// they're being used consistently/correctly. So I'm using mine.
 //==============================
 // Reco
 double CVUniverse::GetThetamuDeg() const {
   return ConvertRadToDeg(GetThetamu());
 }
-double CVUniverse::GetPZmu() const { return GetDouble("MasterAnaDev_muon_Pz"); }
 double CVUniverse::GetPTmu() const {
-  return sqrt(pow(GetDouble("MasterAnaDev_muon_Px"), 2.0) +
-              pow(GetDouble("MasterAnaDev_muon_Py"), 2.0));
+  return sqrt(pow(GetPXmu(), 2.0) +
+              pow(GetPYmu(), 2.0));
 }
+double CVUniverse::GetPXmu() const { return GetMuon4V().Px(); }
+double CVUniverse::GetPYmu() const { return GetMuon4V().Py(); }
+double CVUniverse::GetPZmu() const { return GetMuon4V().Pz(); }
 
 // True
 double CVUniverse::GetPmuTrue() const {
-  return sqrt(pow(GetDouble("truth_muon_px"), 2.0) +
-              pow(GetDouble("truth_muon_py"), 2.0) +
-              pow(GetDouble("truth_muon_pz"), 2.0));
+  return GetPlepTrue();
 }
 double CVUniverse::GetPTmuTrue() const {
-  return sqrt(pow(GetDouble("truth_muon_px"), 2.0) +
-              pow(GetDouble("truth_muon_py"), 2.0));
+  return GetPlepTrue()*sin(GetThetalepTrue());
 }
-double CVUniverse::GetPZmuTrue() const { return GetDouble("truth_muon_pz"); }
+double CVUniverse::GetPZmuTrue() const { 
+  return GetPlepTrue()*cos(GetThetalepTrue());
+}
 double CVUniverse::GetEmuTrue() const {
-  return sqrt(pow(GetPmuTrue(), 2.0) + pow(CCNuPionIncConsts::MUON_MASS, 2.0));
+  return GetElepTrue();
 }
 double CVUniverse::GetThetamuTrue() const {
-  return FixAngle(GetDouble("truth_muon_theta"));
+  return FixAngle(GetThetalepTrue());
 }
 double CVUniverse::GetThetamuTrueDeg() const {
   return ConvertRadToDeg(GetThetamuTrue());
@@ -133,7 +132,9 @@ double CVUniverse::GetLLRScore(RecoPionIdx hadron) const {
                  "In that case, this function won't make sense.\n";
     throw hadron;
   } else if (hadron < -1) {
+    #ifdef NDEBUG
     std::cerr << "CVU::GetLLRScore bogus pion_idx." << hadron << "\n";
+    #endif
     return -1;
     // throw hadron;
   }
@@ -288,8 +289,11 @@ double CVUniverse::GetCalRecoilEnergy() const {
 
 // (Tracked) recoil energy, not determined from calorimetry
 double CVUniverse::GetTrackRecoilEnergy() const {
-  //if (GetPionCandidates().empty())
-  //  std::cout << "CVU::GetETrackedRecoilEnergy WARNING: no pion candidates!\n";
+
+  #ifdef NDEBUG
+  if (GetPionCandidates().empty())
+    std::cout << "CVU::GetETrackedRecoilEnergy WARNING: no pion candidates!\n";
+  #endif
 
   double etracks = 0.;
 
@@ -626,6 +630,7 @@ double CVUniverse::GetAnisoDeltaDecayWarpWeight() const {
 //==============================================================================
 int CVUniverse::GetHighestEnergyPionCandidateIndex(
     const std::vector<int>& pion_candidate_idxs) const {
+
   if (pion_candidate_idxs.empty()) {
     return CCNuPionIncConsts::kEmptyPionCandidateVector;  // == -2
   }
@@ -651,7 +656,9 @@ int CVUniverse::GetHighestEnergyPionCandidateIndex(
   }
   if (largest_tpi_idx == dummy_idx) {
     // return pion_candidate_idxs[0];
+    #ifdef NDEBUG
     std::cerr << "GetHighestEnergyPionCandidateIndex: no pion with KE > 0!\n";
+    #endif
     return -3;
   }
   return largest_tpi_idx;
