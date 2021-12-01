@@ -197,13 +197,14 @@ UniverseMap GetSystematicUniversesMap(PlotUtils::ChainWrapper* chain,
                                                          use_new);
     error_bands.insert(bands_response.begin(), bands_response.end());
 
+
     //========================================================================
     // Michel Efficiency Error bands
     //========================================================================
-    //    UniverseMap michel_error_bands =
-    //        PlotUtils::GetMichelEfficiencySystematicsMap<CVUniverse>(chain);
-    //    error_bands.insert(michel_error_bands.begin(),
-    //    michel_error_bands.end());
+    UniverseMap michel_error_bands =
+        PlotUtils::GetMichelEfficiencySystematicsMap<CVUniverse>(chain);
+    error_bands.insert(michel_error_bands.begin(),
+    michel_error_bands.end());
 
     //========================================================================
     // Diffractive pion production unc
