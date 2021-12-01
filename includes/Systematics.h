@@ -114,34 +114,22 @@ UniverseMap GetSystematicUniversesMap(PlotUtils::ChainWrapper* chain,
     //========================================================================
     // GENIE
     //========================================================================
-    // Standard
-    UniverseMap bands_genie =
-        PlotUtils::GetStandardGenieSystematicsMap<CVUniverse>(chain);
-    error_bands.insert(bands_genie.begin(), bands_genie.end());
-
-    // Pion final state normalization
-    UniverseMap bands_pi_fs_norm =
-        PlotUtils::GetGenieRvx1piSystematicsMap<CVUniverse>(chain);
-    error_bands.insert(bands_pi_fs_norm.begin(), bands_pi_fs_norm.end());
-
-    // GENIE
-    //    UniverseMap genie_error_bands =
-    //        PlotUtils::GetGenieSystematicsMap<CVUniverse>(chain, false);//No
-    //        including the new fitted values
-    //    error_bands.insert(genie_error_bands.begin(),
-    //    genie_error_bands.end());
+    UniverseMap genie_error_bands =
+        PlotUtils::GetGenieSystematicsMap<CVUniverse>(chain, false); // Not including the new fitted values
+    error_bands.insert(genie_error_bands.begin(),
+    genie_error_bands.end());
 
     // New GENIE MaRES and NormCCRes error bands No Covariance
-    //    UniverseMap new_res_genie_error_bands =
-    // PlotUtils::GetGenieResPionFitSystematicsMap<CVUniverse>(chain);
-    //    error_bands.insert(new_res_genie_error_bands.begin(),
-    //    new_res_genie_error_bands.end());
+    UniverseMap new_res_genie_error_bands =
+        PlotUtils::GetGenieResPionFitSystematicsMap<CVUniverse>(chain);
+    error_bands.insert(new_res_genie_error_bands.begin(),
+    new_res_genie_error_bands.end());
 
     // New GENIE MvRES
-    //    UniverseMap new_ep_genie_error_bands =
-    // PlotUtils::GetGenieEPMvResSystematicsMap<CVUniverse>(chain);
-    //    error_bands.insert(new_ep_genie_error_bands.begin(),
-    //    new_ep_genie_error_bands.end());
+    UniverseMap new_ep_genie_error_bands =
+        PlotUtils::GetGenieEPMvResSystematicsMap<CVUniverse>(chain);
+    error_bands.insert(new_ep_genie_error_bands.begin(),
+    new_ep_genie_error_bands.end());
 
     //========================================================================
     // MnvTunes
