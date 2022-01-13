@@ -80,7 +80,18 @@ std::vector<Variable*> GetSidebandVariables(SignalDefinition signal_definition,
   std::vector<Variable*> variables;
   switch (signal_definition) {
     case kOnePi:
-      variables = run_sidebands::GetOnePiVariables(include_truth_vars);
+      variables = make_xsec_mc_inputs::GetOnePiVariables(include_truth_vars);
+      break;
+    case kOnePiNoW:
+      // ljf26 Dec 2021: for now use same variables for all signal definitions
+      // May need to modify these
+      variables = make_xsec_mc_inputs::GetOnePiVariables(include_truth_vars);
+      break;
+    case kNPi:
+      variables = make_xsec_mc_inputs::GetOnePiVariables(include_truth_vars);
+      break;
+    case kNPiNoW:
+      variables = make_xsec_mc_inputs::GetOnePiVariables(include_truth_vars);
       break;
     default:
       std::cerr << "Variables for other SDs not yet implemented.\n";

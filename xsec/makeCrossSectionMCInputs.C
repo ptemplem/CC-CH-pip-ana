@@ -27,6 +27,8 @@ class HadronVariable;
 // Helper Functions
 //==============================================================================
 namespace make_xsec_mc_inputs {
+
+
 typedef Variable Var;
 typedef HadronVariable HVar;
 
@@ -142,6 +144,17 @@ std::vector<Variable*> GetAnalysisVariables(SignalDefinition signal_definition,
     case kOnePi:
       variables = make_xsec_mc_inputs::GetOnePiVariables(include_truth_vars);
       break;
+    case kOnePiNoW:
+      // ljf26 Dec 2021: for now use same variables for all signal definitions
+      // May need to modify these
+      variables = make_xsec_mc_inputs::GetOnePiVariables(include_truth_vars);
+      break;
+    case kNPi:
+      variables = make_xsec_mc_inputs::GetOnePiVariables(include_truth_vars);
+      break;
+    case kNPiNoW:
+      variables = make_xsec_mc_inputs::GetOnePiVariables(include_truth_vars);
+      break;
     default:
       std::cerr << "Variables for other SDs not yet implemented.\n";
       std::exit(1);
@@ -251,6 +264,8 @@ void makeCrossSectionMCInputs(int signal_definition_int = 0,
                               bool do_systematics = false,
                               bool do_truth = false, bool is_grid = false,
                               std::string input_file = "", int run = 0) {
+
+
   // INPUT TUPLES
   const bool is_mc = true;
   std::string mc_file_list;
