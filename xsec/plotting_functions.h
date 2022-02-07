@@ -130,15 +130,23 @@ void SetErrorGroups(MnvPlotter& mnv_plotter) {
   mnv_plotter.error_summary_group_map["Muon"].push_back("MuonAngleXResolution");
   mnv_plotter.error_summary_group_map["Muon"].push_back("MuonAngleYResolution");
   mnv_plotter.error_summary_group_map["Muon"].push_back("MuonResolution");
+  mnv_plotter.error_summary_group_map["Muon"].push_back("Muon_Energy_Resolution");
   mnv_plotter.error_summary_group_map["Michel"].push_back("MichelEfficiency");
-  mnv_plotter.error_summary_group_map["GENIE"].push_back("GENIE_D2_MaRES");
-  mnv_plotter.error_summary_group_map["GENIE"].push_back("GENIE_EP_MvRES");
   mnv_plotter.error_summary_group_map["Target"].push_back("Target_Mass_CH"); 
+  mnv_plotter.error_summary_group_map["Target"].push_back("Target_Mass_C");
+  mnv_plotter.error_summary_group_map["Target"].push_back("Target_Mass_Fe");
+  mnv_plotter.error_summary_group_map["Target"].push_back("Target_Mass_H2O");
+  mnv_plotter.error_summary_group_map["Target"].push_back("Target_Mass_Pb");
   mnv_plotter.error_summary_group_map["Response"].push_back("response_em");
   mnv_plotter.error_summary_group_map["Response"].push_back("response_meson");
   mnv_plotter.error_summary_group_map["Response"].push_back("response_other");
   mnv_plotter.error_summary_group_map["Response"].push_back("response_proton");
   mnv_plotter.error_summary_group_map["Diffractive"].push_back("DiffractiveModelUnc");
+  mnv_plotter.error_summary_group_map["Diffractive"].push_back("CoherentPiUnc_C");
+  mnv_plotter.error_summary_group_map["Diffractive"].push_back("CoherentPiUnc_CH");
+  mnv_plotter.error_summary_group_map["Diffractive"].push_back("CoherentPiUnc_Fe");
+  mnv_plotter.error_summary_group_map["Diffractive"].push_back("CoherentPiUnc_H2O");
+  mnv_plotter.error_summary_group_map["Diffractive"].push_back("CoherentPiUnc_Pb");
   // for(auto g : systematics::kGenieSystematics_FSI)
   //  mnv_plotter.error_summary_group_map["Genie_FSI"].push_back(g);
 
@@ -245,7 +253,6 @@ void Plot_ErrorSummary(EventSelectionPlotInfo p, PlotUtils::MnvH1D* hist,
   Plot_ErrorGroup(p, hist, "2p2h", tag.c_str(), 0.0, 0.1);
   Plot_ErrorGroup(p, hist, "RPA", tag.c_str(), 0.0, 0.1);
   Plot_ErrorGroup(p, hist, "Michel", tag.c_str(), 0.0, 0.3);
-  Plot_ErrorGroup(p, hist, "GENIE", tag.c_str(), 0.0, 0.3);
   Plot_ErrorGroup(p, hist, "Target", tag.c_str(), 0.0, 0.3);
   Plot_ErrorGroup(p, hist, "Response", tag.c_str(), 0.0, 0.3);
 }
@@ -358,7 +365,7 @@ void PlotVar_ErrorSummary(EventSelectionPlotInfo p) {
   Plot_ErrorGroup(p, sel, "", "Sel", 0.0, 0.25);
   Plot_ErrorGroup(p, sel, "LEGENDONLY", "Sel", 0.0, 0.2);
   Plot_ErrorGroup(p, sel, "2p2h", "Sel", 0.0, 0.01);
-  Plot_ErrorGroup(p, sel, "Detector", "Sel", 0.0, 0.15);
+  Plot_ErrorGroup(p, sel, "Detector", "Sel", 0.0, 0.01);
   Plot_ErrorGroup(p, sel, "Flux", "Sel", 0.0, 0.15);
   Plot_ErrorGroup(p, sel, "Genie_FSI_nucleons", "Sel", 0.004, 0.03);
   Plot_ErrorGroup(p, sel, "Genie_FSI_pions", "Sel", 0.01, 0.1);
@@ -367,7 +374,6 @@ void PlotVar_ErrorSummary(EventSelectionPlotInfo p) {
   Plot_ErrorGroup(p, sel, "NonResPi", "Sel", 0.0, 0.06);
   Plot_ErrorGroup(p, sel, "RPA", "Sel", 0.0, 0.01);
   Plot_ErrorGroup(p, sel, "Michel", "Sel", 0.0, 0.15);
-  Plot_ErrorGroup(p, sel, "GENIE", "Sel", 0.0, 0.15);
   Plot_ErrorGroup(p, sel, "Target", "Sel", 0.0, 0.15);
   Plot_ErrorGroup(p, sel, "Response", "Sel", 0.0, 0.15);
   Plot_ErrorGroup(p, sel, "Diffractive", "Sel", 0.0, 0.15);
@@ -545,7 +551,6 @@ void PlotBGSub_ErrorSummary(EventSelectionPlotInfo p) {
   Plot_ErrorGroup(p, bg_sub_data, "2p2h", "BGSub", 0.0, 0.1);      //
   Plot_ErrorGroup(p, bg_sub_data, "RPA", "BGSub", 0.0, 0.1);       //
   Plot_ErrorGroup(p, bg_sub_data, "Michel", "BGSub", 0.0, 0.3);
-  Plot_ErrorGroup(p, bg_sub_data, "GENIE", "BGSub", 0.0, 0.3);
   Plot_ErrorGroup(p, bg_sub_data, "Target", "BGSub", 0.0, 0.3);
   Plot_ErrorGroup(p, bg_sub_data, "Response", "BGSub", 0.0, 0.3);
 }
@@ -653,7 +658,6 @@ void PlotUnfolded_ErrorSummary(EventSelectionPlotInfo p) {
   Plot_ErrorGroup(p, unf, "NonResPi", "Unfolded", 0.0, 0.1);
   Plot_ErrorGroup(p, unf, "RPA", "Unfolded", 0.0, 0.1);
   Plot_ErrorGroup(p, unf, "Michel", "Unfolded", 0.0, 0.1);
-  Plot_ErrorGroup(p, unf, "GENIE", "Unfolded", 0.0, 0.1);
   Plot_ErrorGroup(p, unf, "Target", "Unfolded", 0.0, 0.1);
   Plot_ErrorGroup(p, unf, "Response", "Unfolded", 0.0, 0.1);
 }
@@ -897,7 +901,6 @@ void PlotCrossSection_ErrorSummary(EventSelectionPlotInfo p) {
   Plot_ErrorGroup(p, xsec, "NonResPi", "CrossSection", 0.0, 0.04);
   Plot_ErrorGroup(p, xsec, "RPA", "CrossSection", 0.0, 0.015);
   Plot_ErrorGroup(p, xsec, "Michel", "CrossSection", 0.0, 0.015);
-  Plot_ErrorGroup(p, xsec, "GENIE", "CrossSection", 0.0, 0.015);
   Plot_ErrorGroup(p, xsec, "Target", "CrossSection", 0.0, 0.015);
   Plot_ErrorGroup(p, xsec, "Response", "CrossSection", 0.0, 0.015);
 }
@@ -1004,7 +1007,6 @@ void PlotWSidebandFit_ErrorSummary(EventSelectionPlotInfo p,
   PlotWSidebandFit_ErrorGroup(p, "2p2h", hist, tag);
   PlotWSidebandFit_ErrorGroup(p, "RPA", hist, tag);
   PlotWSidebandFit_ErrorGroup(p, "Michel", hist, tag);
-  PlotWSidebandFit_ErrorGroup(p, "GENIE", hist, tag);
   PlotWSidebandFit_ErrorGroup(p, "Target", hist, tag);
   PlotWSidebandFit_ErrorGroup(p, "Response", hist, tag);
 }
@@ -1288,7 +1290,6 @@ void PlotBG_ErrorSummary(EventSelectionPlotInfo p, bool do_tuned = false) {
   Plot_ErrorGroup(p, bg, "NonResPi", tuned_str, 0.0, 0.05);
   Plot_ErrorGroup(p, bg, "RPA", tuned_str, 0.0, 0.05);
   Plot_ErrorGroup(p, bg, "Michel", tuned_str, 0.0, 0.05);
-  Plot_ErrorGroup(p, bg, "GENIE", tuned_str, 0.0, 0.05);
   Plot_ErrorGroup(p, bg, "Target", tuned_str, 0.0, 0.05);
   Plot_ErrorGroup(p, bg, "Response", tuned_str, 0.0, 0.05);
 }
@@ -1703,7 +1704,6 @@ void PlotEfficiency_ErrorSummary(EventSelectionPlotInfo p) {
   Plot_ErrorGroup(p, eff, "2p2h", "Eff", 0.0, 0.1);
   Plot_ErrorGroup(p, eff, "RPA", "Eff", 0.0, 0.1);
   Plot_ErrorGroup(p, eff, "Michel", "Eff", 0.0, 0.15);
-  Plot_ErrorGroup(p, eff, "GENIE", "Eff", 0.0, 0.15);
   Plot_ErrorGroup(p, eff, "Target", "Eff", 0.0, 0.15);
   Plot_ErrorGroup(p, eff, "Response", "Eff", 0.0, 0.15);
 }

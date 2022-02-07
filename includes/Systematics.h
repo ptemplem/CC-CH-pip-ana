@@ -63,7 +63,11 @@ const std::vector<std::string> kGenieSystematics_InteractionModel = {
     "GENIE_NormDISCC",
     "GENIE_NormNCRES",         // norm
     "GENIE_VecFFCCQEshape",    // shapes
-    "GENIE_CCQEPauliSupViaKF"  // pauli suppression
+    "GENIE_CCQEPauliSupViaKF",  // pauli suppression
+    "GENIE_D2_MaRES",
+    "GENIE_EP_MvRES",
+    "GENIE_D2_NormCCRES",
+    "GENIE_MaCCQE"
 };
 
 UniverseMap GetSystematicUniversesMap(PlotUtils::ChainWrapper* chain,
@@ -218,10 +222,10 @@ UniverseMap GetSystematicUniversesMap(PlotUtils::ChainWrapper* chain,
     //========================================================================
     // Target Mass errors
     //========================================================================
-    //    UniverseMap error_bands_tarmass =
-    //        GetTargetMassSystematicsMap<CVUniverse>( chain );
-    //    error_bands.insert(error_bands_tarmass.begin(),
-    //    error_bands_tarmass.end());
+        UniverseMap error_bands_tarmass =
+            GetTargetMassSystematicsMap<CVUniverse>( chain );
+          error_bands.insert(error_bands_tarmass.begin(),
+          error_bands_tarmass.end());
   }
 
   for (auto band : error_bands) {

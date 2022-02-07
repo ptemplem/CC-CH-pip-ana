@@ -6,7 +6,7 @@
 #include "includes/SignalDefinition.h"
 #include "includes/Variable.h"
 #include "makeCrossSectionMCInputs.C" // GetAnalysisVariables
-#include "includes/CCPiMacroUtil.h"
+#include "includes/MacroUtil.h"
 #include "plotting_functions.h"
 #include "MinervaUnfold/MnvUnfold.h"
 #include "PlotUtils/FluxReweighter.h"
@@ -21,15 +21,17 @@
 void GXSEClosure(int signal_definition_int = 0) {
   // In and outfiles
     //TFile fin("rootfiles/MCXSecInputs_20190903.root", "READ");
-    TFile fin("rootfiles/MCXSecInputs_20190904_ME1A.root", "READ");
+    TFile fin("MCXSecInputs_20220117.root", "READ");
     cout << "Reading input from " << fin.GetName() << endl;
 
   // Set up macro utility object -- which does the systematics for us
-    const char* plist = "ALL";
+    const char* plist = "ME1A";
+    std::string data_file_list = GetPlaylistFile(plist, false);
+    std::string mc_file_list = GetPlaylistFile(plist, true);
     bool do_data = false, do_mc = false, do_truth = false;
     bool do_systematics = true, do_grid = false;
-    CCPiMacroUtil util(signal_definition_int, plist, do_data, do_mc, do_truth,
-                       do_systematics, do_grid);
+    CCPi::MacroUtil util(signal_definition_int, mc_file_list, data_file_list,
+                         plist, do_truth, do_grid, do_systematics);
 
   // Set POT
   PlotUtils::MnvH1D* h_mc_pot=(PlotUtils::MnvH1D*)fin.Get("mc_pot");
@@ -154,7 +156,7 @@ void GXSEClosure(int signal_definition_int = 0) {
         PlotTogether(h_mc_cross_section, "mc", pmu_xsec, "gxse", "gxse_compare_pmu");
 
         // Plot ratio
-        PlotRatio(h_mc_cross_section, pmu_xsec, Form("GXSEClosure_%s", name));
+        PlotRatio(h_mc_cross_section, pmu_xsec, Form("GXSEClosure_%s", name), 1., "", false);
       }
 
 
@@ -197,7 +199,7 @@ void GXSEClosure(int signal_definition_int = 0) {
         PlotTogether(h_all_signal_true, "mc", pmu_rate, "gxse", "gxse_ratecompare_pmu");
 
         // Plot ratio
-        PlotRatio(h_all_signal_true, pmu_rate, Form("GXSERateClosure_%s", name));
+        PlotRatio(h_all_signal_true, pmu_rate, Form("GXSERateClosure_%s", name), 1., "", false);
       }
       
   }

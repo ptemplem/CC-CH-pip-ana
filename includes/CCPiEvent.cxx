@@ -93,6 +93,8 @@ void ccpi_event::FillRecoEvent(const CCPiEvent& event,
       FillMigration(event, variables, std::string("enu"));
     if (HasVar(variables, "wexp") && HasVar(variables, "wexp_true"))
       FillMigration(event, variables, std::string("wexp"));
+    if (HasVar(variables, "ehad") && HasVar(variables, "ehad_true"))
+      FillMigration(event, variables, std::string("ehad"));
   }
 }
 
@@ -461,6 +463,8 @@ void ccpi_event::FillCutVars(CCPiEvent& event,
         FillStackedHists(event, GetVar(variables, "enu"));
       if (HasVar(variables, "q2"))
         FillStackedHists(event, GetVar(variables, "q2"));
+      if (HasVar(variables, "ehad"))
+        FillStackedHists(event, GetVar(variables, "ehad"));
       if (HasVar(variables, "thetamu_deg"))
         FillStackedHists(event, GetVar(variables, "thetamu_deg"));
       if (HasVar(variables, "thetapi_deg"))
