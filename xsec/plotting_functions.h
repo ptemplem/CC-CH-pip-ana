@@ -151,13 +151,15 @@ void SetErrorGroups(MnvPlotter& mnv_plotter) {
   //  mnv_plotter.error_summary_group_map["Genie_FSI"].push_back(g);
 
   for (auto g : systematics::kGenieSystematics_FSI_nucleons)
-    mnv_plotter.error_summary_group_map["Genie_FSI_nucleons"].push_back(g);
+    mnv_plotter.error_summary_group_map["Genie"].push_back(g);
 
   for (auto g : systematics::kGenieSystematics_FSI_pions)
-    mnv_plotter.error_summary_group_map["Genie_FSI_pions"].push_back(g);
+    mnv_plotter.error_summary_group_map["Genie"].push_back(g);
 
   for (auto g : systematics::kGenieSystematics_InteractionModel)
-    mnv_plotter.error_summary_group_map["Genie_InteractionModel"].push_back(g);
+    mnv_plotter.error_summary_group_map["Genie"].push_back(g);
+
+  
 
   mnv_plotter.error_summary_group_map["Detector"].push_back("EmuRangeCurve");
   mnv_plotter.error_summary_group_map["Detector"].push_back("Birks");
