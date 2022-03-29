@@ -45,7 +45,8 @@ enum ECuts {
   kIsoBlobs,
   kIsoProngSep,
   kIsoProngs,
-  kAllCuts
+  kPmu,
+  kAllCuts,
 };
 
 enum EDataMCTruth { kData, kMC, kTruth, kNDataMCTruthTypes };
@@ -71,6 +72,8 @@ const double CHARGED_KAON_MASS = 493.677;
 const double MUON_MASS = 105.659;
 const double PROTON_MASS = 938.3;
 const double PI = 3.14159265358979323846;
+
+const double bindE = 25.;
 
 const unsigned int MAX_N_REC_HADRONS = 10;
 

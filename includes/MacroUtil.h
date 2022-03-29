@@ -36,14 +36,13 @@ class MacroUtil : public PlotUtils::MacroUtil {
   bool m_do_mc;
   bool m_do_truth;
   bool m_do_systematics;
+  bool m_is_grid;
   SignalDefinition m_signal_definition;
   CVUniverse* m_data_universe;
   UniverseMap m_error_bands;
   UniverseMap m_error_bands_truth;
   double m_pot_scale; // For now, only used in xsecDataFromFile
-//#ifndef __CINT__
   void PrintMacroConfiguration(std::string macro_name = "") override;
-//#endif
 
  private:
   void Init(const int signal_definition);

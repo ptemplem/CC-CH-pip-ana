@@ -13,10 +13,8 @@
 #include "includes/Constants.h" // typedef RecoPionIdx 
 #include "includes/CVUniverse.h"
 #include "includes/MacroUtil.h"
-#ifndef __CINT__
 #include "includes/HadronVariable.h"
 #include "includes/Variable.h"
-#endif
 #include "plotting_functions.h"
 
 #include "includes/common_functions.h"
@@ -196,7 +194,7 @@ void LoopAndFill(const CCPi::MacroUtil& util, CVUniverse* universe,
   Long64_t n_entries;
   SetupLoop(type, util, is_mc, is_truth, n_entries);
 
-  std::vector<ECuts> CutsVec = GetCutsVector();
+  std::vector<ECuts> CutsVec = kCutsVector;
   double EPC = 0.0;
   EventCount counter;
   for (auto c : CutsVec){

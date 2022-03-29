@@ -61,6 +61,9 @@ void DoWSidebandTune(CCPi::MacroUtil& util, Variable* fit_var, CVHW& loW_wgt,
       WSidebandFitter wsb_fitter =
           WSidebandFitter(*universe, fit_var->m_hists, util.m_pot_scale);
       wsb_fitter.Fit();
+      std::cout << "low weight:" << (wsb_fitter.m_fit_scale)[kLoWParamId] << "\n";
+      std::cout << "mid weight:" << (wsb_fitter.m_fit_scale)[kMidWParamId] << "\n";
+      std::cout << "hi weight:" << (wsb_fitter.m_fit_scale)[kHiWParamId] << "\n";
       // Store the outputs of the fits in HistWrappers
       loW_wgt.univHist(universe)->SetBinContent(
           1, (wsb_fitter.m_fit_scale)[kLoWParamId]);
@@ -204,7 +207,7 @@ void crossSectionDataFromFile(int signal_definition_int = 0,
   CopyHists(fin, fout);
 
   // INPUT TUPLES
-  // Don't actually use the MC chain, only load it to indirectly access it's
+  // Don't actually use the MC chain, only load it to indirectly access its
   // systematics
   std::string data_file_list = GetPlaylistFile(plist, false);
   std::string mc_file_list = GetPlaylistFile("ME1A", true);
