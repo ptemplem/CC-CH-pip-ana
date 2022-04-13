@@ -87,6 +87,9 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetpimuAngle(RecoPionIdx) const;
   virtual double GetPT(RecoPionIdx) const;
   virtual double GetthetaZ() const;
+  virtual double GetPXnu() const;
+  virtual double GetPYnu() const;
+  virtual double GetPZnu() const;
 
   // With these truth hadron variables, SEE the warning in the .cxx
   virtual double GetTpiTrue(TruePionIdx) const;
@@ -105,6 +108,10 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetPYnuTrue() const;
   virtual double GetPZnuTrue() const;
   virtual double GetthetaZTrue() const;
+  virtual double GetPXpiTrue(TruePionIdx) const;
+  virtual double GetPYpiTrue(TruePionIdx) const;
+  virtual double GetPZpiTrue(TruePionIdx) const;
+  virtual double GetPpiTrue(TruePionIdx) const;
 
   // Misc
   virtual double GetLargestPrimProngSep() const;

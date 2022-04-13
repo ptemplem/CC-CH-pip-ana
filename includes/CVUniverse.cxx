@@ -473,14 +473,14 @@ double CVUniverse::GetAdlerCosTheta(RecoPionIdx hadron) const {
   double mumom = GetPmu();
   double pimom = GetVecElem("MasterAnaDev_pion_P", hadron);
   double Enu = GetEnu();
-//TVector3 NeuDir(-1.968, -365.1, 6223);
+ //Vector3 NeuDir(-1.968, -365.1, 6223);
   TVector3 NeuDir (0, -0.057564027, 0.998341817);
   NeuDir = NeuDir.Unit();
   TVector3 MuDir (GetPXmu(), GetPYmu(), GetPZmu());
   MuDir = MuDir.Unit();
   TVector3 PiDir (GetVecElem("MasterAnaDev_pion_Px", hadron), GetVecElem("MasterAnaDev_pion_Py", hadron), GetVecElem("MasterAnaDev_pion_Pz", hadron));
   PiDir = PiDir.Unit();
-  TVector3 AdAngle = AdlerAngle(2, mumom, pimom, NeuDir, MuDir, PiDir, Enu);
+  TVector3 AdAngle = AdlerAngle(2, mumom/1000, pimom/1000, NeuDir, MuDir, PiDir, Enu/1000);
   if (AdAngle[0] == -1000 && AdAngle[1] == -1000 && AdAngle[2] == -1000) return -1000;
   else return cos(AdAngle[1]);
 }
@@ -496,7 +496,7 @@ double CVUniverse::GetAdlerPhi(RecoPionIdx hadron) const {
   MuDir = MuDir.Unit();
   TVector3 PiDir (GetVecElem("MasterAnaDev_pion_Px", hadron), GetVecElem("MasterAnaDev_pion_Py", hadron), GetVecElem("MasterAnaDev_pion_Pz", hadron));
   PiDir = PiDir.Unit();
-  TVector3 AdAngle = AdlerAngle(2, mumom, pimom, NeuDir, MuDir, PiDir, Enu);
+  TVector3 AdAngle = AdlerAngle(2, mumom/1000, pimom/1000, NeuDir, MuDir, PiDir, Enu/1000);
   if (AdAngle[0] == -1000 && AdAngle[1] == -1000 && AdAngle[2] == -1000) return -1000;
   else return AdAngle[2];
 }
@@ -511,7 +511,7 @@ double CVUniverse::GetAdlerCosThetaTrue(TruePionIdx idx) const {
   TVector3 PiDir (GetVecElem("truth_pi_px", idx), GetVecElem("truth_pi_py", idx), GetVecElem("truth_pi_pz", idx));
   double pimom = PiDir.Mag();
   PiDir = PiDir.Unit();
-  TVector3 AdAngle = AdlerAngle(2, mumom, pimom, NeuDir, MuDir, PiDir, Enu);
+  TVector3 AdAngle = AdlerAngle(2, mumom/1000, pimom/1000, NeuDir, MuDir, PiDir, Enu/1000);
   if (AdAngle[0] == -1000 && AdAngle[1] == -1000 && AdAngle[2] == -1000) return -1000;
   else return cos(AdAngle[1]);
 }
@@ -526,7 +526,7 @@ double CVUniverse::GetAdlerPhiTrue(TruePionIdx idx) const {
   TVector3 PiDir (GetVecElem("truth_pi_px", idx), GetVecElem("truth_pi_py", idx), GetVecElem("truth_pi_pz", idx));
   double pimom = PiDir.Mag();
   PiDir = PiDir.Unit();
-  TVector3 AdAngle = AdlerAngle(2, mumom, pimom, NeuDir, MuDir, PiDir, Enu);
+  TVector3 AdAngle = AdlerAngle(2, mumom/1000, pimom/1000, NeuDir, MuDir, PiDir, Enu/1000);
   if (AdAngle[0] == -1000 && AdAngle[1] == -1000 && AdAngle[2] == -1000) return -1000;
   else return AdAngle[2];
 }
@@ -563,6 +563,9 @@ double CVUniverse::GetPTTrue(TruePionIdx idx) const{
   return pT.Mag();
 }
 
+double CVUniverse::GetPXnu() const{ return 0*GetEnu();}
+double CVUniverse::GetPYnu() const{ return -0.057564027*GetEnu();}
+double CVUniverse::GetPZnu() const{ return 0.998341817*GetEnu();}
 double CVUniverse::GetPXnuTrue() const{ return GetVecElem("mc_incomingPartVec", 0);}
 double CVUniverse::GetPYnuTrue() const{ return GetVecElem("mc_incomingPartVec", 1);}
 double CVUniverse::GetPZnuTrue() const{ return GetVecElem("mc_incomingPartVec", 2);}
@@ -574,14 +577,23 @@ double CVUniverse::GetthetaZ() const{
   TVector3 P_nu = GetEnu()*NeuDir;
   TVector3 P_mu (GetPXmu(), GetPYmu(), GetPZmu());
   TVector3 Z = P_nu - P_mu;
-  return Z.Theta();
+  return ConvertRadToDeg(Z.Theta());
 }
 
 double CVUniverse::GetthetaZTrue() const{
   TVector3 P_nu (GetVecElem("mc_incomingPartVec", 0), GetVecElem("mc_incomingPartVec", 1), GetVecElem("mc_incomingPartVec", 2));
   TVector3 P_mu (GetPXmuTrue(), GetPYmuTrue(), GetPZmuTrue());
   TVector3 Z = P_nu - P_mu;
-  return Z.Theta();
+  return ConvertRadToDeg(Z.Theta());
+}
+
+double CVUniverse::GetPXpiTrue(TruePionIdx idx) const{ return GetVecElem("truth_pi_px", idx);}
+double CVUniverse::GetPYpiTrue(TruePionIdx idx) const{ return GetVecElem("truth_pi_py", idx);}
+double CVUniverse::GetPZpiTrue(TruePionIdx idx) const{ return GetVecElem("truth_pi_pz", idx);}
+
+double CVUniverse::GetPpiTrue(TruePionIdx idx) const{ 
+  TVector3 P_pi (GetVecElem("truth_pi_px", idx), GetVecElem("truth_pi_py", idx), GetVecElem("truth_pi_pz", idx));
+  return P_pi.Mag();
 }
 
 //==============================
