@@ -144,7 +144,7 @@ void runCutVariables(int signal_definition_int = 0,
     std::vector<Variable*> variables;
 
     variables.reserve( cut_variables.size() + ana_variables.size() ); // preallocate memory
-    variables.insert( variables.end(), cut_variables.begin(), cut_variables.end() );
+    //variables.insert( variables.end(), cut_variables.begin(), cut_variables.end() );
     variables.insert( variables.end(), ana_variables.begin(), ana_variables.end() );
 
     for (auto var : variables) {
@@ -157,6 +157,9 @@ void runCutVariables(int signal_definition_int = 0,
 
   // PLOT STUFF
   for (auto v : variables){
+
+    std::cout<<"runCutVariables for VARIABLE: "<<v->Name()<<std::endl;
+
     std::string tag;
     if(v->Name() == "wexp0")
       tag = "After: no cuts. Before: Precuts.";
@@ -181,6 +184,7 @@ void runCutVariables(int signal_definition_int = 0,
     double ymax = -1;
     bool do_bwn = true;
     std::cout << "Plotting" << std::endl;
+
     PlotCutVar(v, v->m_hists.m_selection_data, v->GetStackArray(kS), 
                util.m_data_pot, util.m_mc_pot, util.m_signal_definition, tag,
                "SSB", ymax, do_bwn);
