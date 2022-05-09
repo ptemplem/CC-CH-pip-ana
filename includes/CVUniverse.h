@@ -71,6 +71,7 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetEnode4(RecoPionIdx) const;
   virtual double GetEnode5(RecoPionIdx) const;
 
+  virtual TVector3 GetPpiVecWRTB(RecoPionIdx) const;
   virtual double GetPZpi(RecoPionIdx) const;
   virtual double GetPXpi(RecoPionIdx) const;
   virtual double GetPYpi(RecoPionIdx) const;
@@ -87,6 +88,7 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetpimuAngle(RecoPionIdx) const;
   virtual double GetPT(RecoPionIdx) const;
   virtual double GetthetaZ() const;
+  virtual TVector3 GetPnuVecWRTB() const;
   virtual double GetPXnu() const;
   virtual double GetPYnu() const;
   virtual double GetPZnu() const;
@@ -104,10 +106,12 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   virtual double GetpimuAngleTrue(TruePionIdx) const;
   virtual double GetPTTrue(TruePionIdx) const;
   virtual double GetALRTrue(TruePionIdx) const;
+  virtual TVector3 GetPnuVecWRTBTrue() const;
   virtual double GetPXnuTrue() const;
   virtual double GetPYnuTrue() const;
   virtual double GetPZnuTrue() const;
   virtual double GetthetaZTrue() const;
+  virtual TVector3 GetPpiVecWRTBTrue(TruePionIdx) const;
   virtual double GetPXpiTrue(TruePionIdx) const;
   virtual double GetPYpiTrue(TruePionIdx) const;
   virtual double GetPZpiTrue(TruePionIdx) const;
@@ -166,6 +170,7 @@ class CVUniverse : public PlotUtils::MinervaUniverse {
   double Calct(const double epi, const double emu, const double pzpi,
                const double pzmu, const double pxpi, const double pxmu,
                const double pypi, const double pymu) const;
+  TVector3 TejinRefSys(TVector3 Pnu, TVector3 Pmu, TVector3 var) const;
   // Functions to make fidvol cut
   virtual bool rightlinesCut (const double a,const double x,const double y) const;
   virtual bool leftlinesCut (const double a,const double x,const double y) const;

@@ -29,8 +29,8 @@ typedef Variable Var;
 typedef HadronVariable HVar;
 
 std::vector<Variable*> GetOnePiVariables(bool include_truth_vars = true) {
-  const int nadphibins = 16, nPxNubins = 15, nPyNubins = 20, nPzNubins = 100, nThetaZbins = 18;
-  const double adphimin = -CCNuPionIncConsts::PI, PxNumin = -75, PyNumin = -1400, PzNumin = 0, ThetaZmin = 0;
+  const int nadphibins = 16, nPxNubins = 15, nPyNubins = 20, nPzNubins = 25, nThetaZbins = 18;
+  const double adphimin = -CCNuPionIncConsts::PI, PxNumin = -75, PyNumin = -100, PzNumin = 0, ThetaZmin = 0;
   const double adphimax = CCNuPionIncConsts::PI, PxNumax = 75, PyNumax = 100, PzNumax = 24000, ThetaZmax = 180;
 
   HVar* tpi = new HVar("tpi", "T_{#pi}", "MeV", CCPi::GetBinning("tpi"),

@@ -19,7 +19,7 @@ kEV_SEL_MACRO     = "event_selection/runEventSelectionGrid.C+"
 kMC_INPUTS_MACRO  = "xsec/makeCrossSectionMCInputs.C+"
 # Grid Stuff
 kMINERVA_RELEASE  = os.getenv("MINERVA_RELEASE")
-kMEMORY           = "1000MB"
+kMEMORY           = "1500MB"
 kGRID_OPTIONS     = ("--group=minerva "
                      "--resource-provides=usage_model=DEDICATED,OPPORTUNISTIC "
                      "--role=Analysis "
