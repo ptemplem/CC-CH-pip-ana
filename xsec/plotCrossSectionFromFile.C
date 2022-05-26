@@ -15,9 +15,11 @@
 #include "includes/MacroUtil.h"
 #include "includes/SignalDefinition.h"
 #include "includes/Variable.h"
+#include "includes/Variable2D.h"
 #include "includes/common_functions.h"
 #include "makeCrossSectionMCInputs.C"  // GetAnalysisVariables
 #include "plotting_functions.h"
+#include "plotting_functions2D.h"
 
 void SetPOT(TFile& fin, CCPi::MacroUtil& util) {
   util.m_mc_pot = -1;
@@ -42,12 +44,12 @@ void SetPOT(TFile& fin, CCPi::MacroUtil& util) {
 // Main
 //==============================================================================
 void plotCrossSectionFromFile(int signal_definition_int = 0,
-                              int plot_errors = 1) {
+                              int plot_errors = 0) {
   // Infiles
-  TFile fin("DataXSecInputs_20220225.root", "READ");
+  TFile fin("DataXSecInputs_0000_ME1A_0_2022-05-24.root", "READ");
   cout << "Reading input from " << fin.GetName() << endl;
 
-  TFile finCCPi("DataXSecInputs_20220225.root", "READ");
+  TFile finCCPi("DataXSecInputs_0000_ME1A_0_2022-05-24.root", "READ");
   //    TFile
   //    finCCPi("/minerva/app/users/granados/cmtuser/Minerva_v22r1p1_CCPionInc/Ana/CCPionInc/ana/ME_CCNuPionInc_Ana/DataXSec_20211010_NewTupla.root",
   //    "READ");
@@ -64,7 +66,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   // INPUT TUPLES
   // Don't actually use the MC chain, only load it to indirectly access it's
   // systematics
-  const std::string plist = "ME1D";
+  const std::string plist = "ME1B";
   std::string data_file_list = GetPlaylistFile(plist, false);
   std::string mc_file_list = GetPlaylistFile(plist, true);
 
@@ -91,6 +93,9 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   const bool do_truth_vars = true;
   std::vector<Variable*> variables =
       GetAnalysisVariables(util.m_signal_definition, do_truth_vars);
+  std::vector<Variable2D*> variables2D =
+      GetAnalysisVariables2D(util.m_signal_definition, do_truth_vars);
+
 
   for (auto var : variables) {
     var->LoadMCHistsFromFile(fin, util.m_error_bands);
@@ -99,7 +104,10 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
     // if(var->Name() == "ptmu")
     //  PrintUniverseContent(var->m_hists.m_cross_section);
   }
-
+  for (auto var2D : variables2D) {
+    var2D->LoadMCHistsFromFile(fin, util.m_error_bands);
+    var2D->LoadDataHistsFromFile(fin);
+  }
   {  // remove unwanted variables
     ContainerEraser::erase_if(variables, [](Variable* v) {
       return v->Name() == "tpi_mbr" || v->Name() == "wexp_fit";
@@ -245,10 +253,41 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
         if (plot_errors) PlotBG_ErrorSummary(plot_info, do_tuned_bg);
       }
     }
+    for (auto var2D : variables2D){
+      EventSelectionPlotInfo2D plot_info(var2D, util.m_mc_pot, util.m_data_pot,
+                                       do_frac_unc, do_cov_area_norm,
+                                       include_stat, util.m_signal_definition);
+      if (var2D->m_is_true) continue;
+      std::string v2D = var2D->NameX() + "_vs_" + var2D->NameY();
+      std::string xlabelX = var2D->m_hists2D.m_xlabelX;
+      std::string xlabelY = var2D->m_hists2D.m_xlabelY;
+      std::string unitsX = var2D->m_unitsX;
+      std::string unitsY = var2D->m_unitsY;
+      TH2D* data = (TH2D*)fin.Get(Form("selection_data_%s", v2D.c_str())); 
+      TH2D* mc = (TH2D*)fin.Get(Form("selection_mc_%s", v2D.c_str()));  
+      TH2D* bg = (TH2D*)fin.Get(Form("bg_%s", v2D.c_str()));
+      bg->Scale(util.m_data_pot/util.m_mc_pot);
+      mc->Scale(util.m_data_pot/util.m_mc_pot);   
+      data->SetMarkerStyle(20);
+      data->SetMarkerSize(0.8);
+      data->SetMarkerColor(1);
+      data->SetLineWidth(1);
+      data->SetLineStyle(1);
+      data->SetLineColor(1);
+      bg->SetFillColor(46);
+      bg->SetFillStyle(3005);
+      bg->SetLineColor(46);
+      bg->SetLineWidth(1);
+      mc->SetLineColor(2);
+      std::vector<TH2D*> hists;
+      hists.push_back(mc);
+      hists.push_back(bg);
+      PlotVar_Selection2D(hists, data, v2D, xlabelX, xlabelY, unitsX, unitsY);
+    }
   }
 
   // PLOT Efficiency & Migration
-  if (true) {
+  if (false) {
     const bool do_frac_unc = true;
     const bool include_stat = true;
     const bool do_cov_area_norm = false;
@@ -291,7 +330,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   }
 
   // PLOT Background Subtraction
-  if (true) {
+  if (false) {
     const bool do_frac_unc = true;
     const bool include_stat = true;
     const bool do_cov_area_norm = false;
@@ -319,7 +358,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   }
 
   // PLOT W Sideband Fit
-  if (true) {
+  if (false) {
     const bool do_frac_unc = true;
     const bool do_cov_area_norm = false;
     const bool include_stat = true;
@@ -342,7 +381,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   }
 
   // PLOT unfolded
-  if (true) {
+  if (false) {
     const bool do_frac_unc = true;
     const bool include_stat = true;
     const bool do_cov_area_norm = false;
@@ -365,7 +404,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   }
 
   // PLOT cross section
-  if (true) {
+  if (false) {
     const bool do_frac_unc = true;
     const bool include_stat = true;
     const bool do_cov_area_norm = false;

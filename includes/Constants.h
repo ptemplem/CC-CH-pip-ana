@@ -58,6 +58,7 @@ typedef int TruePionIdx;
 typedef int RecoPionIdx;
 
 typedef PlotUtils::MnvH1D MH1D;
+typedef PlotUtils::MnvH2D MH2D;
 typedef PlotUtils::HistWrapper<CVUniverse> CVHW;
 typedef PlotUtils::Hist2DWrapper<CVUniverse> CVH2DW;
 
@@ -188,5 +189,26 @@ void SetHistColorScheme(PlotUtils::MnvH1D* h, const int type,
       h->SetLineColor(CCNuPionIncPlotting::colors[type]);
   }
 }
-
+/*
+void SetHistColorScheme2D(PlotUtils::MnvH2D* h, const int type,
+                        const int color_scheme) {
+  switch (color_scheme) {
+    case 2:
+      h->SetFillColor(CCNuPionIncPlotting::fill_colors2[type]);
+      h->SetLineColor(CCNuPionIncPlotting::colors2[type]);
+      break;
+    case 3:
+      h->SetFillColor(CCNuPionIncPlotting::fill_colors3[type]);
+      h->SetLineColor(CCNuPionIncPlotting::colors3[type]);
+      break;
+    case 4:
+      h->SetFillColor(CCNuPionIncPlotting::fill_colors4[type]);
+      h->SetLineColor(CCNuPionIncPlotting::colors4[type]);
+      break;
+    default:
+      h->SetFillColor(CCNuPionIncPlotting::fill_colors[type]);
+      h->SetLineColor(CCNuPionIncPlotting::colors[type]);
+  }
+}
+*/
 #endif  // Constants_h

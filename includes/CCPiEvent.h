@@ -7,8 +7,9 @@
 #include "TruthCategories/Sidebands.h"         // WSidebandType
 #include "TruthCategories/SignalBackground.h"  // SignalBackgroundType
 #include "Variable.h"
+#include "Variable2D.h"
 class Variable;
-
+class Variable2D;
 //==============================================================================
 // CCPiEvent is a container struct holding misc info about a universe-event:
 // * passes cuts
@@ -59,10 +60,14 @@ SignalBackgroundType GetSignalBackgroundType(const CCPiEvent&);
 namespace ccpi_event {
 // Xsec analysis fill functions
 void FillSelected(const CCPiEvent&, const std::vector<Variable*>&);
+void FillSelected2D(const CCPiEvent&, const std::vector<Variable2D*>&);
 void FillRecoEvent(const CCPiEvent&, const std::vector<Variable*>&);
+void FillRecoEvent2D(const CCPiEvent&, const std::vector<Variable2D*>&);
 void FillWSideband(const CCPiEvent&, const std::vector<Variable*>&);
 void FillTruthEvent(const CCPiEvent&, const std::vector<Variable*>&);
+void FillTruthEvent2D(const CCPiEvent&, const std::vector<Variable2D*>&);
 void FillEfficiencyDenominator(const CCPiEvent&, const std::vector<Variable*>&);
+void FillEfficiencyDenominator2D(const CCPiEvent&, const std::vector<Variable2D*>&);
 void FillMigration(const CCPiEvent&, const std::vector<Variable*>&,
                    std::string name);
 

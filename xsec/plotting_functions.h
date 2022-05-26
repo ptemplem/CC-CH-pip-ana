@@ -29,8 +29,11 @@
 //#include "TStyle.h"
 #include "TText.h"
 #include "Variable.h"
+#include "Variable2D.h"
+#include "PlotUtils/GridCanvas.h"
 
 class Variable;
+class Variable2D;
 
 //==============================================================================
 // Container class
@@ -399,7 +402,33 @@ void PlotVar_ErrorSummary(EventSelectionPlotInfo p) {
   Plot_ErrorGroup(p, sel, "Diffractive", "Sel", 0.0, 0.15);
   Plot_ErrorGroup(p, sel, "PhysicsModel", "Sel", 0.0, 0.15);
 }
-
+/*
+void PlotVar_Selection2D(std::vector<TH2D*> hists, TH2D* data, std::string var, std::string xlabelX, std::string xlabelY, std::string unitsX, std::string unitsY){
+    std::vector<int> bins = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
+    auto legend = new TLegend(0.69,0.15,0.98,0.33);
+    legend->AddEntry(hists[0], "MC", "l");
+    legend->AddEntry(hists[1], "BG", "f");
+    legend->AddEntry(data, "Data", "p");
+    PlotUtils::GridCanvas* StackedPlot =new  PlotUtils::GridCanvas(Form("2D_Sel_%s",var.c_str()), 4, 3, 1400, 600);
+    StackedPlot->SetRightMargin(0.01);
+    StackedPlot->SetLeftMargin(0.1);
+    StackedPlot->ResetPads();
+//    data->SetMarkerStyle(8);
+//    StackedPlot->DrawStack( hists, "HIST", false, bins, false, NULL);
+    StackedPlot->DrawOneHist( hists[0], "HIST E2", false, bins, false, NULL);
+    StackedPlot->DrawOneHist( hists[1], "SAME HIST", false, bins, false, NULL);
+    StackedPlot->DrawOneHist(data, "SAME E1", false, bins, false, NULL);
+    StackedPlot->DrawBinRanges(data, 2, bins, Form("%s (%s)",xlabelY.c_str(), unitsY.c_str()), 0.03, ".2f", 2);
+    StackedPlot->SetXTitle(Form("%s (%s)",xlabelX.c_str(), unitsX.c_str()));
+    StackedPlot->SetYTitle("Events");
+    //StackedPlot->BuildLegend();
+    StackedPlot->ResetPads();
+    legend->Draw();
+    StackedPlot->Draw();
+    StackedPlot->Print(Form("2D_Sel_%s.png",var.c_str()));
+ 
+}
+*/
 //==============================================================================
 // Background-Subtracted
 //==============================================================================

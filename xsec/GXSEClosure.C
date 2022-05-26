@@ -20,8 +20,7 @@
 //==============================================================================
 void GXSEClosure(int signal_definition_int = 0) {
   // In and outfiles
-    //TFile fin("rootfiles/MCXSecInputs_20190903.root", "READ");
-    TFile fin("rootfiles/MCXSecInputs_20190904_ME1A.root", "READ");
+    TFile fin("rootfiles/MCXSecInputs_20190903.root", "READ");
     cout << "Reading input from " << fin.GetName() << endl;
 
   // Set up macro utility object -- which does the systematics for us

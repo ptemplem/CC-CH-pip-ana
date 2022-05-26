@@ -17,13 +17,15 @@
 #include "includes/Systematics.h"                // GetSystematicUniversesMap
 #include "includes/TruthCategories/Sidebands.h"  // sidebands::kFitVarString, IsWSideband
 #include "includes/Variable.h"
+#include "includes/Variable2D.h"
 #include "includes/WSidebandFitter.h"
 #include "includes/common_functions.h"  // GetVar, CopyHists, WritePOT, erase_if, uniq
 #include "makeCrossSectionMCInputs.C"   // GetAnalysisVariables
 #include "plotting_functions.h"
 
 void LoopAndFillData(const CCPi::MacroUtil& util,
-                     std::vector<Variable*> variables) {
+                     std::vector<Variable*> variables,
+		     std::vector<Variable2D*> variables2D) {
   // Fill data distributions.
   const bool is_mc = false;
   const bool is_truth = false;
@@ -44,6 +46,7 @@ void LoopAndFillData(const CCPi::MacroUtil& util,
     // event.m_is_w_sideband = IsWSideband(event);
 
     ccpi_event::FillRecoEvent(event, variables);
+    ccpi_event::FillRecoEvent2D(event, variables2D);
   }
   std::cout << "*** Done Data ***\n\n";
 }
@@ -191,16 +194,16 @@ void ScaleBG(Variable* var, CCPi::MacroUtil& util, const CVHW& loW_wgt,
 // Main
 //==============================================================================
 void crossSectionDataFromFile(int signal_definition_int = 0,
-                              const char* plist = "ALL") {
+                              const char* plist = "ME1A") {
   //============================================================================
   // Setup
   //============================================================================
 
   // I/O
-  TFile fin("MCXSecInputs_20220302.root", "READ");
+  TFile fin("MCXSecInputs_0000_ME1A_0_2022-05-24.root", "READ");
   std::cout << "Reading input from " << fin.GetName() << endl;
 
-  TFile fout("DataXSecInputs_20220302.root", "RECREATE");
+  TFile fout("DataXSecInputs_0000_ME1A_0_2022-05-24.root", "RECREATE");
   std::cout << "Output file is " << fout.GetName() << "\n";
 
   std::cout << "Copying all hists from fin to fout\n";
@@ -226,6 +229,8 @@ void crossSectionDataFromFile(int signal_definition_int = 0,
   const bool do_truth_vars = true;
   std::vector<Variable*> variables =
       GetAnalysisVariables(util.m_signal_definition, do_truth_vars);
+  std::vector<Variable2D*> variables2D =
+      GetAnalysisVariables2D(util.m_signal_definition, do_truth_vars);
 
   {  // remove unwanted variables
     ContainerEraser::erase_if(
@@ -247,12 +252,16 @@ void crossSectionDataFromFile(int signal_definition_int = 0,
     v->LoadMCHistsFromFile(fin, util.m_error_bands);
     v->InitializeDataHists();
   }
-
+  for (auto v2D : variables2D) {
+    std::cout << "Loading hists for variable " << v2D->NameX() << "_vs_" << v2D->NameY() << "\n";
+    v2D->LoadMCHistsFromFile(fin, util.m_error_bands);
+    v2D->InitializeDataHists();
+  }
   //============================================================================
   // Loop Data and Make Event Selection
   //============================================================================
 
-  LoopAndFillData(util, variables);
+  LoopAndFillData(util, variables, variables2D);
 
   // Add empty error bands to data hists and fill their CVs
   for (auto v : variables) {
@@ -261,7 +270,7 @@ void crossSectionDataFromFile(int signal_definition_int = 0,
         *v->m_hists.m_selection_mc.hist);
   }
 
-  SaveDataHistsToFile(fout, variables);
+  SaveDataHistsToFile(fout, variables, variables2D);
 
   //============================================================================
   // Tune Sideband

@@ -104,12 +104,64 @@ void ccpi_event::FillRecoEvent(const CCPiEvent& event,
       FillMigration(event, variables, std::string("PT"));
   }
 }
+void ccpi_event::FillRecoEvent2D(const CCPiEvent& event,
+                               const std::vector<Variable2D*>& variables) {
+  // Fill selection -- total, signal-only, and bg-only
+  if (event.m_passes_cuts) {
+    ccpi_event::FillSelected2D(event, variables);
+  }
+  // Fill W Sideband
+/*  if (event.m_is_w_sideband) {
+    ccpi_event::FillWSideband(event, variables);
+  }
+*/
+  // Fill Migration
+/*  if (event.m_is_mc && event.m_is_signal && event.m_passes_cuts) {
+    if (HasVar(variables, "tpi") && HasVar(variables, "tpi_true"))
+      FillMigration(event, variables, std::string("tpi"));
+    if (HasVar(variables, "thetapi_deg") &&
+        HasVar(variables, "thetapi_deg_true"))
+      FillMigration(event, variables, std::string("thetapi_deg"));
+    if (HasVar(variables, "pmu") && HasVar(variables, "pmu_true"))
+      FillMigration(event, variables, std::string("pmu"));
+    if (HasVar(variables, "pzmu") && HasVar(variables, "pzmu_true"))
+      FillMigration(event, variables, std::string("pzmu"));
+    if (HasVar(variables, "ptmu") && HasVar(variables, "ptmu_true"))
+      FillMigration(event, variables, std::string("ptmu"));
+    if (HasVar(variables, "thetamu_deg") &&
+        HasVar(variables, "thetamu_deg_true"))
+      FillMigration(event, variables, std::string("thetamu_deg"));
+    if (HasVar(variables, "q2") && HasVar(variables, "q2_true"))
+      FillMigration(event, variables, std::string("q2"));
+    if (HasVar(variables, "enu") && HasVar(variables, "enu_true"))
+      FillMigration(event, variables, std::string("enu"));
+    if (HasVar(variables, "wexp") && HasVar(variables, "wexp_true"))
+      FillMigration(event, variables, std::string("wexp"));
+    if (HasVar(variables, "ehad") && HasVar(variables, "ehad_true"))
+      FillMigration(event, variables, std::string("ehad"));
+    if (HasVar(variables, "cosadtheta") && HasVar(variables, "cosadtheta_true"))
+      FillMigration(event, variables, std::string("cosadtheta"));
+    if (HasVar(variables, "adphi") && HasVar(variables, "adphi_true"))
+      FillMigration(event, variables, std::string("adphi"));
+    if (HasVar(variables, "pimuAngle") && HasVar(variables, "pimuAngle_true"))
+      FillMigration(event, variables, std::string("pimuAngle"));
+    if (HasVar(variables, "PT") && HasVar(variables, "PT_true"))
+      FillMigration(event, variables, std::string("PT"));
+  }*/
+}
 
 void ccpi_event::FillTruthEvent(const CCPiEvent& event,
                                 const std::vector<Variable*>& variables) {
   // Fill Efficiency Denominator
   if (event.m_is_signal)
     ccpi_event::FillEfficiencyDenominator(event, variables);
+}
+
+void ccpi_event::FillTruthEvent2D(const CCPiEvent& event,
+                                const std::vector<Variable2D*>& variables) {
+  // Fill Efficiency Denominator
+  if (event.m_is_signal)
+    ccpi_event::FillEfficiencyDenominator2D(event, variables);
 }
 
 //==============================================================================
@@ -174,6 +226,76 @@ void ccpi_event::FillSelected(const CCPiEvent& event,
         case kWSideband_High:
           var->m_hists.m_bg_hiW.FillUniverse(*event.m_universe, fill_val,
                                              event.m_weight);
+          break;
+        default:
+          std::cerr << "FillBackgrounds: no such W category\n";
+          std::exit(2);
+      }
+    }
+  }  // end variables
+}
+
+void ccpi_event::FillSelected2D(const CCPiEvent& event,
+                              const std::vector<Variable2D*>& variables) {
+  for (auto var : variables) {
+    // Sanity Checks
+    if (var->m_is_true && !event.m_is_mc) return;  // truth, but not MC?
+    if (event.m_reco_pion_candidate_idxs.empty()) {
+      std::cerr << "ccpi_event::FillSelected2D: empty pion idxs vector\n";
+      std::exit(1);
+    }
+
+    // Get fill value
+    double fill_valX = -999.;
+    double fill_valY = -999.;
+    if (var->m_is_true) {
+      TruePionIdx idx = GetHighestEnergyTruePionIndex(event);
+      fill_valX = var->GetValueX(*event.m_universe, idx);
+      fill_valY = var->GetValueY(*event.m_universe, idx);
+    } else {
+      // RecoPionIdx idx = GetHighestEnergyPionCandidateIndex(event);
+      RecoPionIdx idx = event.m_highest_energy_pion_idx;
+      std::string name = var->NameX() + var->NameY();
+      fill_valX = var->GetValueX(*event.m_universe, idx);
+      fill_valY = var->GetValueY(*event.m_universe, idx);
+    }
+
+    // total = signal & background, together
+    if (event.m_is_mc) {
+      var->m_hists2D.m_selection_mc.FillUniverse(*event.m_universe, fill_valX,
+                                               fill_valY, event.m_weight);
+      var->m_hists2D.m_selection_mc.FillUniverse(*event.m_universe, fill_valX,
+                                               fill_valY, event.m_weight);
+    } else {
+      var->m_hists2D.m_selection_data->Fill(fill_valX, fill_valY);
+    }
+
+    // done with data
+    if (!event.m_is_mc) continue;
+
+    // signal and background individually
+    if (event.m_is_signal) {
+      var->m_hists2D.m_effnum.FillUniverse(*event.m_universe, fill_valX,
+                                         fill_valY, event.m_weight);
+    } else {
+      var->m_hists2D.m_bg.FillUniverse(*event.m_universe, fill_valX,
+                                     fill_valY, event.m_weight);
+
+      // Fill bg by W sideband category
+      switch (event.m_w_type) {
+        case kWSideband_Signal:
+          break;
+        case kWSideband_Low:
+          var->m_hists2D.m_bg_loW.FillUniverse(*event.m_universe, fill_valX,
+                                             fill_valY, event.m_weight);
+          break;
+        case kWSideband_Mid:
+          var->m_hists2D.m_bg_midW.FillUniverse(*event.m_universe, fill_valX,
+                                              fill_valY, event.m_weight);
+          break;
+        case kWSideband_High:
+          var->m_hists2D.m_bg_hiW.FillUniverse(*event.m_universe, fill_valX,
+                                             fill_valY, event.m_weight);
           break;
         default:
           std::cerr << "FillBackgrounds: no such W category\n";
@@ -261,6 +383,24 @@ void ccpi_event::FillEfficiencyDenominator(
     } catch (...) {
       std::cerr << "From ccpi_event::FillEfficiencyDenominator\n";
       std::cerr << "Variable is " << var->Name() << "\n";
+      throw;
+    }
+  }
+}
+
+void ccpi_event::FillEfficiencyDenominator2D(
+    const CCPiEvent& event, const std::vector<Variable2D*>& variables) {
+  for (auto var : variables) {
+    if (!var->m_is_true) continue;
+    TruePionIdx idx = GetHighestEnergyTruePionIndex(event);
+    double fill_valX = var->GetValueX(*event.m_universe, idx);
+    double fill_valY = var->GetValueY(*event.m_universe, idx);
+    try {
+      var->m_hists2D.m_effden.FillUniverse(*event.m_universe, fill_valX,
+                                         fill_valY, event.m_weight);
+    } catch (...) {
+      std::cerr << "From ccpi_event::FillEfficiencyDenominator2D\n";
+      std::cerr << "Variable is " << var->NameX() << "_vs_" << var->NameY() << "\n";
       throw;
     }
   }
