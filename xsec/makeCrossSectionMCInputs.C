@@ -303,7 +303,8 @@ void makeCrossSectionMCInputs(int signal_definition_int = 0,
                               std::string plist = "ME1A",
                               bool do_systematics = false,
                               bool do_truth = false, bool is_grid = false,
-                              std::string input_file = "", int run = 0, std::string input_id = "") {
+                              std::string input_file = "", int run = 0,
+                              std::string input_id = "", std::string outfile = "histograms/histogram") {
   // INPUT TUPLES
   const bool is_mc = true;
   std::string mc_file_list;
@@ -331,7 +332,7 @@ void makeCrossSectionMCInputs(int signal_definition_int = 0,
   //                              signal_definition_int, int(do_systematics),
   //                              int(do_truth), int(is_grid), plist.c_str(), run,
   //                              tag.c_str()));
-  std:string outfile_name("histograms"+input_id+".root");
+  std:string outfile_name(outfile+input_id+".root");
   std::cout << "Saving output to " << outfile_name << "\n\n";
   TFile fout(outfile_name.c_str(), "RECREATE");
 

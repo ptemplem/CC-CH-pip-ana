@@ -42,12 +42,12 @@ void SetPOT(TFile& fin, CCPi::MacroUtil& util) {
 // Main
 //==============================================================================
 void plotCrossSectionFromFile(int signal_definition_int = 0,
-                              int plot_errors = 1) {
+                              int plot_errors = 1, std::string xsec_inputs = "DataXSecInputs.root", std::string data_file_list = "data_list.txt", std::string mc_file_list = "mc_list.txt") {
   // Infiles
-  TFile fin("DataXSecInputs_20220225.root", "READ");
+  TFile fin(xsec_inputs.c_str(), "READ");
   cout << "Reading input from " << fin.GetName() << endl;
 
-  TFile finCCPi("DataXSecInputs_20220225.root", "READ");
+  TFile finCCPi(xsec_inputs.c_str(), "READ");
   //    TFile
   //    finCCPi("/minerva/app/users/granados/cmtuser/Minerva_v22r1p1_CCPionInc/Ana/CCPionInc/ana/ME_CCNuPionInc_Ana/DataXSec_20211010_NewTupla.root",
   //    "READ");
@@ -65,8 +65,8 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   // Don't actually use the MC chain, only load it to indirectly access it's
   // systematics
   const std::string plist = "ME1D";
-  std::string data_file_list = GetPlaylistFile(plist, false);
-  std::string mc_file_list = GetPlaylistFile(plist, true);
+  // std::string data_file_list = GetPlaylistFile(plist, false);
+  // std::string mc_file_list = GetPlaylistFile(plist, true);
 
   // Macro Utility
   const std::string macro("PlotCrossSectionFromFile");
@@ -78,8 +78,8 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   // Get POT from file, not from any chain
   SetPOT(fin, util);
 
-  std::string data_file_list_CCPi = GetPlaylistFileCCPi(plist, false);
-  std::string mc_file_list_CCPi = GetPlaylistFileCCPi(plist, true);
+  std::string data_file_list_CCPi = data_file_list
+  std::string mc_file_list_CCPi = mc_file_list
 
   CCPi::MacroUtil utilCCPi(signal_definition_int, mc_file_list_CCPi,
                            data_file_list_CCPi, plist, do_truth, is_grid,
