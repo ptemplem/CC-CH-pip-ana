@@ -10,5 +10,5 @@
     gInterpreter->AddIncludePath( "${TOPDIR}/MAT-MINERvA/weighters" );
     gSystem->Load( gSystem->ExpandPathName("${TOPDIR}/opt/lib/libMAT.so") );
     gSystem->Load( gSystem->ExpandPathName("${TOPDIR}/opt/lib/libMAT-MINERvA.so") );
-    std::cout >> "${TOPDIR}/opt/lib/libMAT-MINERvA.so"
+    std::cout << gSystem->ExpandPathName("${TOPDIR}/opt/lib/libMAT-MINERvA.so");
 }
