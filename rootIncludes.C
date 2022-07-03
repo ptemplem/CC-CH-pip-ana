@@ -8,7 +8,6 @@
     gInterpreter->AddIncludePath( "${TOPDIR}/MAT-MINERvA/universes" );
     gInterpreter->AddIncludePath( "${TOPDIR}/MAT-MINERvA/utilities" );
     gInterpreter->AddIncludePath( "${TOPDIR}/MAT-MINERvA/weighters" );
-    gInterpreter->AddIncludePath( "${TOPDIR}/MAT-MINERvA/weighters" );
     gInterpreter->AddIncludePath( "${TOPDIR}/opt/lib" );
     gSystem->Load( "libMAT.so" );
     gSystem->Load( "libMAT-MINERvA.so" );
