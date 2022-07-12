@@ -78,8 +78,8 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   // Get POT from file, not from any chain
   SetPOT(fin, util);
 
-  std::string data_file_list_CCPi = data_file_list
-  std::string mc_file_list_CCPi = mc_file_list
+  std::string data_file_list_CCPi = data_file_list;
+  std::string mc_file_list_CCPi = mc_file_list;
 
   CCPi::MacroUtil utilCCPi(signal_definition_int, mc_file_list_CCPi,
                            data_file_list_CCPi, plist, do_truth, is_grid,
