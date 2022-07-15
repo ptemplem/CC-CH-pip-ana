@@ -64,7 +64,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   // INPUT TUPLES
   // Don't actually use the MC chain, only load it to indirectly access it's
   // systematics
-  const std::string plist = "ME1D";
+  const std::string plist = "ME1A";
   // std::string data_file_list = GetPlaylistFile(plist, false);
   // std::string mc_file_list = GetPlaylistFile(plist, true);
 
