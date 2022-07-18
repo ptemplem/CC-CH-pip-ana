@@ -110,11 +110,11 @@ void LoopAndFillCutVars(const CCPi::MacroUtil& util, CVUniverse* universe,
 // Main
 //==============================================================================
 void runCutVariables(int signal_definition_int = 0, 
-                     const char* plist = "ME1A") {
+                     const char* plist = "ME1A",
+                     std::string data_file_list,
+                     std::string mc_file_list) {
 
   // Macro Utility
-  std::string data_file_list = GetPlaylistFile(plist, false);
-  std::string mc_file_list = GetPlaylistFile(plist, true); 
   const std::string macro("runCutVariables");
   bool do_truth = false, is_grid = false, do_systematics = false;
   CCPi::MacroUtil util(signal_definition_int, mc_file_list, data_file_list,
