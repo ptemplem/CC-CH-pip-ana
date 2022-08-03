@@ -21,10 +21,7 @@ enum ECuts {
   kVtx,
   kMinosMatch,
   kMinosCharge,
-  kMinosCoil,
   kMinosMuon,
-  kThetaMu,
-  kDeadTime,
   kNProngs,
   kWexp,
   kNPionCandidates,
@@ -32,18 +29,8 @@ enum ECuts {
   kAtLeastOnePionCandidateTrack,
   kNode,
   kPionMult,
-  kAtLeastOneAnchoredProng,
-  kNoInteractionVertexMichels,
   kAtLeastOneMichel,
-  kAtLeastOneBrandonMichel,
-  kExactlyOneEndpointMichel,
-  kOldMichel,
-  kdEdx,
-  kAtLeastOneLLRCandidate,
-  kAtLeastOneNodeCandidate,
   kLLR,
-  kIsoBlobs,
-  kIsoProngSep,
   kIsoProngs,
   kPmu,
   kAllCuts,
@@ -74,6 +61,7 @@ const double PROTON_MASS = 938.3;
 const double PI = 3.14159265358979323846;
 
 const double bindE = 25.;
+const double numi_beam_angle_rad = -0.05887;
 
 const unsigned int MAX_N_REC_HADRONS = 10;
 
