@@ -42,7 +42,7 @@ void SetPOT(TFile& fin, CCPi::MacroUtil& util) {
 // Main
 //==============================================================================
 void plotCrossSectionFromFile(int signal_definition_int = 0,
-                              int plot_errors = 1, std::string xsec_inputs = "DataXSecInputs.root", std::string data_file_list = "data_list.txt", std::string mc_file_list = "mc_list.txt") {
+                              int plot_errors = 1, std::string xsec_inputs = "", std::string data_file_list = "data_list.txt", std::string mc_file_list = "mc_list.txt") {
   // Infiles
   TFile fin(xsec_inputs.c_str(), "READ");
   cout << "Reading input from " << fin.GetName() << endl;
