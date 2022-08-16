@@ -19,16 +19,16 @@ namespace CCPi {
 class MacroUtil : public PlotUtils::MacroUtil {
  public:
   // Data
-  MacroUtil(const int signal_definition, const std::string& data_file_list,
+  MacroUtil(const int signal_definition, std::vector<double> params, const std::string& data_file_list,
             const std::string& plist, const bool is_grid);
 
   // MC (and Truth)
-  MacroUtil(const int signal_definition, const std::string& mc_file_list,
+  MacroUtil(const int signal_definition, std::vector<double> params, const std::string& mc_file_list,
             const std::string& plist, const bool do_truth, const bool is_grid,
             const bool do_systematics);
 
   // Data, MC (and Truth)
-  MacroUtil(const int signal_definition, const std::string& mc_file_list,
+  MacroUtil(const int signal_definition, std::vector<double> params, const std::string& mc_file_list,
             const std::string& data_file_list, const std::string& plist,
             const bool do_truth, const bool is_grid, const bool do_systematics);
 
@@ -38,6 +38,7 @@ class MacroUtil : public PlotUtils::MacroUtil {
   bool m_do_systematics;
   bool m_is_grid;
   SignalDefinition m_signal_definition;
+  std::vector<double> m_params;
   CVUniverse* m_data_universe;
   UniverseMap m_error_bands;
   UniverseMap m_error_bands_truth;

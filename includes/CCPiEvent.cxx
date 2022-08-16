@@ -12,18 +12,19 @@
 //==============================================================================
 CCPiEvent::CCPiEvent(const bool is_mc, const bool is_truth,
                      const SignalDefinition signal_definition,
-                     CVUniverse* universe)
+                     CVUniverse* universe, std::vector<double> params)
     : m_is_mc(is_mc),
       m_is_truth(is_truth),
       m_signal_definition(signal_definition),
       m_universe(universe),
       m_reco_pion_candidate_idxs(),
-      m_highest_energy_pion_idx(-300)
+      m_highest_energy_pion_idx(-300),
+      m_params(params)
 // m_reco_pion_candidate_idxs_sideband()
 {
-  m_is_signal = is_mc ? IsSignal(*universe, signal_definition) : false;
+  m_is_signal = is_mc ? IsSignal(*universe, signal_definition, params) : false;
   m_weight = is_mc ? universe->GetWeight() : 1.;
-  m_w_type = is_mc ? GetWSidebandType(*universe, signal_definition,
+  m_w_type = is_mc ? GetWSidebandType(*universe, signal_definition, params,
                                       sidebands::kNWFitCategories)
                    : kNWSidebandTypes;
 }
@@ -34,17 +35,17 @@ CCPiEvent::CCPiEvent(const bool is_mc, const bool is_truth,
 // Used in analysis pipeline
 bool PassesCuts(CCPiEvent& e, bool& is_w_sideband) {
   return PassesCuts(*e.m_universe, e.m_reco_pion_candidate_idxs, e.m_is_mc,
-                    e.m_signal_definition, is_w_sideband);
+                    e.m_signal_definition, is_w_sideband, e.m_params);
 }
 
 // Only used for studies -- not used in analysis pipeline
 bool PassesCuts(CCPiEvent& e, std::vector<ECuts> cuts) {
   return PassesCuts(*e.m_universe, e.m_reco_pion_candidate_idxs, e.m_is_mc,
-                    e.m_signal_definition, cuts);
+                    e.m_signal_definition, e.m_params, cuts);
 }
 
-SignalBackgroundType GetSignalBackgroundType(const CCPiEvent& e) {
-  return GetSignalBackgroundType(*e.m_universe, e.m_signal_definition);
+SignalBackgroundType GetSignalBackgroundType(const CCPiEvent& e, std::vector<double> params) {
+  return GetSignalBackgroundType(*e.m_universe, e.m_signal_definition, params);
 }
 
 RecoPionIdx GetHighestEnergyPionCandidateIndex(const CCPiEvent& e) {
@@ -311,7 +312,7 @@ void ccpi_event::FillCounters(
     if (event.m_is_truth != IsPrecut(i_cut))
       continue;  // truth loop does precuts
     pass = pass && PassesCut(*event.m_universe, i_cut, event.m_is_mc,
-                             event.m_signal_definition, dummy1, dummy2);
+                             event.m_signal_definition, event.m_params, dummy1, dummy2);
     if (pass) {
       if (!event.m_is_mc) {
         (*signal)[i_cut] += event.m_weight;
@@ -353,7 +354,7 @@ void ccpi_event::FillCutVars(CCPiEvent& event,
     }
     event.m_reco_pion_candidate_idxs.clear();
     pass = pass &&
-           PassesCut(*universe, cut, is_mc, sd, endpoint_michels, vertex_mich);
+           PassesCut(*universe, cut, is_mc, sd, event.m_params, endpoint_michels, vertex_mich);
     if (!pass) continue;
 
     // fill container of pion candidate idxs
@@ -504,27 +505,27 @@ void ccpi_event::FillStackedHists(const CCPiEvent& event, Variable* v,
       ->Fill(fill_val, event.m_weight);
 
   v->GetStackComponentHist(
-       GetSignalBackgroundType(*event.m_universe, event.m_signal_definition))
+       GetSignalBackgroundType(*event.m_universe, event.m_signal_definition, event.m_params))
       ->Fill(fill_val, event.m_weight);
 
   v->GetStackComponentHist(
-       GetWSidebandType(*event.m_universe, event.m_signal_definition))
+       GetWSidebandType(*event.m_universe, event.m_signal_definition, event.m_params))
       ->Fill(fill_val, event.m_weight);
 
   v->GetStackComponentHist(
-       GetMesonBackgroundType(*event.m_universe, event.m_signal_definition))
+       GetMesonBackgroundType(*event.m_universe, event.m_signal_definition, event.m_params))
       ->Fill(fill_val, event.m_weight);
 
   v->GetStackComponentHist(
-       GetWBackgroundType(*event.m_universe, event.m_signal_definition))
+       GetWBackgroundType(*event.m_universe, event.m_signal_definition, event.m_params))
       ->Fill(fill_val, event.m_weight);
 
   v->GetStackComponentHist(
-       GetTruthWType(*event.m_universe, event.m_signal_definition))
+       GetTruthWType(*event.m_universe, event.m_signal_definition, event.m_params))
       ->Fill(fill_val, event.m_weight);
 
   v->GetStackComponentHist(
-       GetCoherentType(*event.m_universe, event.m_signal_definition))
+       GetCoherentType(*event.m_universe, event.m_signal_definition, event.m_params))
       ->Fill(fill_val, event.m_weight);
 }
 

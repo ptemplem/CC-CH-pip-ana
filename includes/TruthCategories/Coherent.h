@@ -15,8 +15,8 @@ enum CoherentType
 //==============================================================================
 
 CoherentType GetCoherentType(const CVUniverse& universe,
-                             SignalDefinition signal_definition = kOnePi) {
-  bool is_signal   = GetSignalBackgroundType(universe, signal_definition) == kS;
+                             SignalDefinition signal_definition, std::vector<double> params) {
+  bool is_signal   = GetSignalBackgroundType(universe, signal_definition, params) == kS;
   bool is_coherent = GetChannelType(universe) == kCOHPI;
   if (is_signal)
     return is_coherent ? kCOHERENT_S : kNOTCOHERENT_S;

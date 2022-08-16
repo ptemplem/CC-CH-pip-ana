@@ -73,6 +73,7 @@ std::vector<Variable*> GetCutVariables(
   std::vector<Variable*> variables;
   switch (signal_definition) {
     case kOnePi:
+    case kParams:
       variables = run_cut_variables::GetOnePiVariables(include_truth_vars);
       break;
     default:
@@ -99,7 +100,7 @@ void LoopAndFillCutVars(const CCPi::MacroUtil& util, CVUniverse* universe,
   //for(Long64_t i_event=0; i_event < 10000; ++i_event){
     if (i_event%500000==0) std::cout << (i_event/1000) << "k " << std::endl;
     universe->SetEntry(i_event);
-    CCPiEvent event(is_mc, is_truth, util.m_signal_definition, universe);
+    CCPiEvent event(is_mc, is_truth, util.m_signal_definition, universe, util.m_params);
     ccpi_event::FillCutVars(event, variables); // this function does a lot of work
   } // events
   std::cout << "*** Done ***\n\n";
@@ -112,12 +113,14 @@ void LoopAndFillCutVars(const CCPi::MacroUtil& util, CVUniverse* universe,
 void runCutVariables(int signal_definition_int = 0, 
                      const char* plist = "ME1A",
                      std::string data_file_list = "",
-                     std::string mc_file_list = "") {
-
+                     std::string mc_file_list = "",
+                     double w_exp = 1400., double npi = 1, double pim = 0, double pi0 = 0) {
+  // Initialize params tuple
+  std::vector<double> params{ w_exp, npi, pim, pi0 };
   // Macro Utility
   const std::string macro("runCutVariables");
   bool do_truth = false, is_grid = false, do_systematics = false;
-  CCPi::MacroUtil util(signal_definition_int, mc_file_list, data_file_list,
+  CCPi::MacroUtil util(signal_definition_int, params, mc_file_list, data_file_list,
                        plist, do_truth, is_grid, do_systematics);
   util.PrintMacroConfiguration(macro);
 

@@ -34,11 +34,11 @@ void LoopAndFillData(const CCPi::MacroUtil& util,
     util.m_data_universe->SetEntry(i_event);
 
     CCPiEvent event(is_mc, is_truth, util.m_signal_definition,
-                    util.m_data_universe);
+                    util.m_data_universe, util.m_params);
 
     event.m_passes_cuts =
         PassesCuts(*util.m_data_universe, event.m_reco_pion_candidate_idxs,
-                   is_mc, util.m_signal_definition, event.m_is_w_sideband);
+                   is_mc, util.m_signal_definition, event.m_is_w_sideband, util.m_params);
 
     event.m_highest_energy_pion_idx = GetHighestEnergyPionCandidateIndex(event);
     // event.m_is_w_sideband = IsWSideband(event);
@@ -191,11 +191,14 @@ void ScaleBG(Variable* var, CCPi::MacroUtil& util, const CVHW& loW_wgt,
 // Main
 //==============================================================================
 void crossSectionDataFromFile(int signal_definition_int = 0,
-                              const char* plist = "ALL", std::string histograms = "MCXSecInputs.root", std::string xsec_inputs = "DataXSecInputs.root", std::string data_file_list = "data_list.txt", std::string mc_file_list = "mc_list.txt") {
+                              const char* plist = "ALL", std::string histograms = "MCXSecInputs.root", std::string xsec_inputs = "DataXSecInputs.root",
+                              std::string data_file_list = "data_list.txt", std::string mc_file_list = "mc_list.txt",
+                             double w_exp = 1400., double npi = 1, double pim = 0, double pi0 = 0) {
   //============================================================================
   // Setup
   //============================================================================
-
+  // Initialize params tuple
+  std::vector<double> params{ w_exp, npi, pim, pi0 };
   // I/O
   TFile fin(histograms.c_str(), "READ");
   std::cout << "Reading input from " << fin.GetName() << endl;
@@ -215,7 +218,7 @@ void crossSectionDataFromFile(int signal_definition_int = 0,
   // Macro Utility
   const std::string macro("CrossSectionDataFromFile");
   bool do_truth = false, is_grid = false, do_systematics = true;
-  CCPi::MacroUtil util(signal_definition_int, mc_file_list, data_file_list,
+  CCPi::MacroUtil util(signal_definition_int, params, mc_file_list, data_file_list,
                        plist, do_truth, is_grid, do_systematics);
   util.PrintMacroConfiguration(macro);
 

@@ -7,6 +7,7 @@
 
 // CTOR Data
 CCPi::MacroUtil::MacroUtil(const int signal_definition,
+                           std::vector<double> params,
                            const std::string& data_file_list,
                            const std::string& plist, const bool is_grid)
     : PlotUtils::MacroUtil("MasterAnaDev", data_file_list, plist),
@@ -14,12 +15,14 @@ CCPi::MacroUtil::MacroUtil(const int signal_definition,
       m_do_mc(false),
       m_do_truth(false),
       m_do_systematics(false),
+      m_params(params),
       m_is_grid(is_grid) {
   Init(signal_definition);
 }
 
 // CTOR MC (and Truth)
 CCPi::MacroUtil::MacroUtil(const int signal_definition,
+                           std::vector<double> params,
                            const std::string& mc_file_list,
                            const std::string& plist, const bool do_truth,
                            const bool is_grid, const bool do_systematics)
@@ -28,12 +31,14 @@ CCPi::MacroUtil::MacroUtil(const int signal_definition,
       m_do_mc(true),
       m_do_truth(do_truth),
       m_do_systematics(do_systematics),
+      m_params(params),
       m_is_grid(is_grid) {
   Init(signal_definition);
 }
 
 // CTOR Data, MC (and Truth)
 CCPi::MacroUtil::MacroUtil(const int signal_definition,
+                           std::vector<double> params,
                            const std::string& mc_file_list,
                            const std::string& data_file_list,
                            const std::string& plist, const bool do_truth,
@@ -44,6 +49,7 @@ CCPi::MacroUtil::MacroUtil(const int signal_definition,
       m_do_mc(true),
       m_do_truth(do_truth),
       m_do_systematics(do_systematics),
+      m_params(params),
       m_is_grid(is_grid) {
   Init(signal_definition);
 }

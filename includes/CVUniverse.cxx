@@ -577,10 +577,10 @@ double CVUniverse::GetCalRecoilEnergy_DefaultSpline() const {
 
 // This is what the response universe calls our tracked recoil energy
 double CVUniverse::GetNonCalRecoilEnergy() const {
-#ifdef NDEBUG
-  if (GetPionCandidates().empty())
-    std::cout << "CVU::GetETrackedRecoilEnergy WARNING: no pion candidates!\n";
-#endif
+//#ifdef NDEBUG
+//  if (GetPionCandidates().empty())
+//    std::cout << "CVU::GetETrackedRecoilEnergy WARNING: no pion candidates!\n";
+//#endif
 
   double etracks = 0.;
 

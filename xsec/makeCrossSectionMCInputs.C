@@ -150,6 +150,7 @@ std::vector<Variable*> GetAnalysisVariables(SignalDefinition signal_definition,
   std::vector<Variable*> variables;
   switch (signal_definition) {
     case kOnePi:
+    case kParams:
       variables = make_xsec_mc_inputs::GetOnePiVariables(include_truth_vars);
       break;
     default:
@@ -202,7 +203,7 @@ void LoopAndFillMCXSecInputs(const CCPi::MacroUtil& util,
         //if (universe->GetDouble("mc_incoming") == 12 &&
         //    universe->ShortName() == "cv")
         //  universe->PrintArachneLink();
-        CCPiEvent event(is_mc, is_truth, util.m_signal_definition, universe); // call GetWeight
+        CCPiEvent event(is_mc, is_truth, util.m_signal_definition, universe, util.m_params); // call GetWeight
 
         //===============
         // FILL TRUTH
@@ -220,7 +221,8 @@ void LoopAndFillMCXSecInputs(const CCPi::MacroUtil& util,
             // fill-in cv_reco_pion_candidate_idxs and cv_is_w_sideband
             cv_passes_cuts =
                 PassesCuts(*universe, cv_reco_pion_candidate_idxs, is_mc,
-                           util.m_signal_definition, cv_is_w_sideband);
+                           util.m_signal_definition, cv_is_w_sideband,
+                           util.m_params);
             checked_cv = true;
           }
 
@@ -265,7 +267,10 @@ void makeCrossSectionMCInputs(int signal_definition_int = 0,
                               bool do_systematics = false,
                               bool do_truth = true, bool is_grid = false,
                               std::string input_file = "",
-                              std::string outfile_name = "") {
+                              std::string outfile_name = "",
+                              double w_exp = 1400., double npi = 1, double pim = 0, double pi0 = 0) {
+  // Initialize params tuple
+  std::vector<double> params{ w_exp, npi, pim, pi0 };
   // INPUT TUPLES
   const bool is_mc = true;
   std::string mc_file_list;
@@ -280,7 +285,7 @@ void makeCrossSectionMCInputs(int signal_definition_int = 0,
   const std::string macro("MCXSecInputs");
   // std::string a_file =
   // "root://fndca1.fnal.gov:1094///pnfs/fnal.gov/usr/minerva/persistent/users/bmesserl/pions//20200713/merged/mc/ME1A/CCNuPionInc_mc_AnaTuple_run00110000_Playlist.root";
-  CCPi::MacroUtil util(signal_definition_int, mc_file_list, plist, do_truth,
+  CCPi::MacroUtil util(signal_definition_int, params, mc_file_list, plist, do_truth,
                        is_grid, do_systematics);
   util.PrintMacroConfiguration(macro);
 

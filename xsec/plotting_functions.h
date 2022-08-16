@@ -415,7 +415,7 @@ void Plot_BGSub(EventSelectionPlotInfo p, std::string outdir = ".",
   assert(p.m_variable->m_hists.m_effnum.hist);
 
   TCanvas canvas("c1", "c1");
-
+  std::cout << "TAG 1";
   // Get Hists
   TH1D* bg_sub_data_w_tot_error =
       new TH1D(p.m_variable->m_hists.m_bg_subbed_data->GetCVHistoWithError());
@@ -423,7 +423,7 @@ void Plot_BGSub(EventSelectionPlotInfo p, std::string outdir = ".",
       p.m_variable->m_hists.m_bg_subbed_data->GetCVHistoWithStatError());
   TH1D* effnum_w_stat_error =
       new TH1D(p.m_variable->m_hists.m_effnum.hist->GetCVHistoWithStatError());
-
+  std::cout << "TAG 2";
   // Log Scale
   if (do_log_scale) {
     canvas.SetLogy();
