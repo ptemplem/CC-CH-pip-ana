@@ -9,12 +9,12 @@ enum WType
   kHighW, kLowW, kNWTypes
 };
 
-WType GetTruthWType(const CVUniverse& universe, SignalDefinition signal_definition) {
+WType GetTruthWType(const CVUniverse& universe, SignalDefinition signal_definition, std::vector<double> params) {
   //=======================================================
   // The actual return value
   //=======================================================
   double Wexp_true = universe.GetWexpTrue();
-  return Wexp_true < GetWCutValue(signal_definition) ? kLowW : kHighW;
+  return Wexp_true < GetWCutValue(signal_definition, params) ? kLowW : kHighW;
 }
 
 std::string GetTruthClassification_LegendLabel(WType w_category){

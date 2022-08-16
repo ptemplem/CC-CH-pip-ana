@@ -30,24 +30,24 @@
 //==============================================================================
 // Call the cut functions -- fill-in/return the ref to the good pion candidate
 bool PassesCuts(CVUniverse&, std::vector<int>& pion_candidate_idxs, bool is_mc,
-                SignalDefinition, std::vector<ECuts> cuts = kCutsVector);
+                SignalDefinition, std::vector<double> params, std::vector<ECuts> cuts = kCutsVector);
 
 // also tell whether we are w sideband
 bool PassesCuts(CVUniverse&, std::vector<int>& pion_candidate_idxs,
-                const bool is_mc, const SignalDefinition, bool& is_w_sideband,
+                const bool is_mc, const SignalDefinition, bool& is_w_sideband, std::vector<double> params,
                 std::vector<ECuts> cuts = kCutsVector);
 
 // NEW return passes_all_cuts, is_w_sideband, and pion_candidate_indices
 std::tuple<bool, bool, std::vector<int>> PassesCuts(
-    CVUniverse&, const bool is_mc, const SignalDefinition,
+    CVUniverse&, const bool is_mc, const SignalDefinition, std::vector<double> params,
     const std::vector<ECuts> cuts = kCutsVector);
 
 EventCount PassedCuts(const CVUniverse&, std::vector<int>& pion_candidate_idxs,
-                      bool is_mc, SignalDefinition,
+                      bool is_mc, SignalDefinition, std::vector<double> params,
                       std::vector<ECuts> cuts = kCutsVector);
 
 bool PassesCut(const CVUniverse&, const ECuts cut, const bool is_mc,
-               const SignalDefinition, MichelMap& endpoint_michels,
+               const SignalDefinition, std::vector<double> params, MichelMap& endpoint_michels,
                MichelMap& vertex_michels);
 
 // Get a vector of integers which are unique hadron prong identifiers.
@@ -66,7 +66,7 @@ bool MinosActivityCut(const CVUniverse&);
 // Cut functions -- eventwide
 bool MinosMatchCut(const CVUniverse&);
 bool MinosChargeCut(const CVUniverse&);
-bool WexpCut(const CVUniverse&, SignalDefinition);
+bool WexpCut(const CVUniverse&, SignalDefinition, std::vector<double> params);
 bool IsoProngCut(const CVUniverse&);
 std::vector<int> GetQualityPionCandidateIndices(const CVUniverse&);
 bool HadronQualityCuts(const CVUniverse&, const RecoPionIdx pion_candidate_idx);

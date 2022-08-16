@@ -4,10 +4,10 @@
 #include "includes/CVUniverse.h"
 
 enum SignalDefinition{ 
-  kOnePi, kOnePiNoW, kNPi, kNPiNoW, kNSignalDefTypes 
+  kOnePi, kOnePiNoW, kNPi, kNPiNoW, kParams, kNSignalDefTypes 
 };
 
-double GetWCutValue(SignalDefinition signal_definition) {
+double GetWCutValue(SignalDefinition signal_definition, std::vector<double> params) {
   switch (signal_definition) {
     case kOnePi:
       return 1400.;
@@ -16,6 +16,8 @@ double GetWCutValue(SignalDefinition signal_definition) {
     case kOnePiNoW:
     case kNPiNoW:
       return 120000.;
+    case kParams:
+      return params[0]*1000;
     default:
       std::cout << "ERROR GetWCutValue" << std::endl;
       return -1.;
@@ -79,7 +81,7 @@ bool PmuSignal(const CVUniverse& univ){
     else return true;
 }
 
-bool IsSignal(const CVUniverse& universe, SignalDefinition signal_definition = kOnePi) {
+bool IsSignal(const CVUniverse& universe, SignalDefinition signal_definition, std::vector<double> params) {
   int n_signal_pions = NSignalPions(universe);
   if( universe.GetInt("mc_current")  == 1 
        && universe.GetBool("truth_is_fiducial") 
@@ -87,7 +89,7 @@ bool IsSignal(const CVUniverse& universe, SignalDefinition signal_definition = k
        && universe.GetInt("mc_incoming") == 14 
        && universe.GetThetalepTrue() < 0.3491 // 20 deg
        && universe.GetWexpTrue() > 0
-       && universe.GetWexpTrue() < GetWCutValue(signal_definition)
+       && universe.GetWexpTrue() < GetWCutValue(signal_definition, params)
        && n_signal_pions > 0
        && NOtherParticles(universe) == 0
        && PmuSignal(universe)
@@ -112,7 +114,21 @@ bool IsSignal(const CVUniverse& universe, SignalDefinition signal_definition = k
     case kNPi:
     case kNPiNoW:
       return true;
-
+    case kParams: {
+      bool param_cut = true;
+      if (universe.GetInt("truth_N_pip") + universe.GetInt("truth_N_pim") + universe.GetInt("truth_N_pi0") <= int (params[1])) {
+          if (int (params[2]) == 0) {
+            if (universe.GetInt("truth_N_pim") != 0)
+              param_cut = false;
+          }
+          if (int (params[3]) == 0) {
+            if (universe.GetInt("truth_N_pi0") != 0)
+              param_cut = false; 
+          }
+      }
+      else param_cut = false;
+      return param_cut;
+    }
     default:
       std::cout << "IsSignal Error Unknown Signal Definition!" << std::endl;
       return false;
@@ -129,6 +145,8 @@ std::string GetSignalName(SignalDefinition signal_definition){
       return "#nu_{#mu} Tracker #rightarrow #mu^{-} 1#pi^{+} X  (W < 1.8 GeV)";
     case kNPiNoW:
       return "#nu_{#mu} Tracker #rightarrow #mu^{-} 1#pi^{+} X";
+    case kParams: 
+      return "Placeholder Param Name";
     default:
       return "UNKNOWN SIGNAL";
   }
@@ -144,6 +162,8 @@ std::string GetSignalFileTag(SignalDefinition signal_definition){
       return "NPi";
     case kNPiNoW:
       return "NPiNoW";
+    case kParams:
+      return "workflow";
     default:
       return "UNKNOWN SIGNAL";
   }

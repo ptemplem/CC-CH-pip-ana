@@ -42,7 +42,11 @@ void SetPOT(TFile& fin, CCPi::MacroUtil& util) {
 // Main
 //==============================================================================
 void plotCrossSectionFromFile(int signal_definition_int = 0,
-                              int plot_errors = 1, std::string xsec_inputs = "", std::string data_file_list = "data_list.txt", std::string mc_file_list = "mc_list.txt") {
+                              int plot_errors = 1, std::string xsec_inputs = "",
+                              std::string data_file_list = "data_list.txt", std::string mc_file_list = "mc_list.txt",
+                             double w_exp = 1400., double npi = 1, double pim = 0, double pi0 = 0) {
+  // Initialize params tuple
+  std::vector<double> params{ w_exp, npi, pim, pi0 };
   // Infiles
   TFile fin(xsec_inputs.c_str(), "READ");
   cout << "Reading input from " << fin.GetName() << endl;
@@ -71,7 +75,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   // Macro Utility
   const std::string macro("PlotCrossSectionFromFile");
   bool do_truth = false, is_grid = false, do_systematics = true;
-  CCPi::MacroUtil util(signal_definition_int, mc_file_list, data_file_list,
+  CCPi::MacroUtil util(signal_definition_int, params, mc_file_list, data_file_list,
                        plist, do_truth, is_grid, do_systematics);
   util.PrintMacroConfiguration(macro);
 
@@ -81,7 +85,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
   std::string data_file_list_CCPi = data_file_list;
   std::string mc_file_list_CCPi = mc_file_list;
 
-  CCPi::MacroUtil utilCCPi(signal_definition_int, mc_file_list_CCPi,
+  CCPi::MacroUtil utilCCPi(signal_definition_int, params, mc_file_list_CCPi,
                            data_file_list_CCPi, plist, do_truth, is_grid,
                            do_systematics);
   utilCCPi.PrintMacroConfiguration(macro);

@@ -24,8 +24,8 @@ enum MesonBackgroundType
 // Simple Signal-Background (no BG breakdown)
 //==============================================================================
 SignalBackgroundType GetSignalBackgroundType(const CVUniverse& universe,
-                                             SignalDefinition signal_definition) {
-  if (IsSignal(universe, signal_definition))
+                                             SignalDefinition signal_definition, std::vector<double> params) {
+  if (IsSignal(universe, signal_definition, params))
     return kS;
   else 
     return kB;
@@ -58,10 +58,10 @@ std::string GetTruthClassification_Name(SignalBackgroundType category) {
 // Signal-Background -- W
 //==============================================================================
 WBackgroundType GetWBackgroundType(const CVUniverse& universe,
-                                   SignalDefinition signal_definition) {
-  if (IsSignal(universe, signal_definition))
+                                   SignalDefinition signal_definition, std::vector<double> params) {
+  if (IsSignal(universe, signal_definition, params))
     return kS_W;
-  else if ( GetTruthWType(universe, signal_definition) == kHighW ) {
+  else if ( GetTruthWType(universe, signal_definition, params) == kHighW ) {
     if (universe.GetInt("truth_N_pip") > 1) {
       //if (universe.shortName() == "cv") {
       //  int link_size = 200;
@@ -114,8 +114,8 @@ std::string GetTruthClassification_Name(WBackgroundType category) {
 // Signal-Background -- Meson content
 //==============================================================================
 MesonBackgroundType GetMesonBackgroundType(const CVUniverse& universe,
-                                           SignalDefinition signal_definition) {
-  if (IsSignal(universe, signal_definition))
+                                           SignalDefinition signal_definition, std::vector<double> params) {
+  if (IsSignal(universe, signal_definition, params))
     return kS_Meson;
 
   std::vector<int> fs_particles = universe.GetVec<int>("mc_FSPartPDG");

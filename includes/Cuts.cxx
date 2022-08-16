@@ -50,7 +50,7 @@ bool AddOrReplaceMichel(MichelMap& mm, Michel m) {
 // if a track fails a cut, we remove the track's michel from the lists.
 // then at the end, return the track indices.
 bool PassesCuts(CVUniverse& univ, std::vector<int>& pion_candidate_idxs,
-                bool is_mc, SignalDefinition signal_definition,
+                bool is_mc, SignalDefinition signal_definition, std::vector<double> params,
                 std::vector<ECuts> cuts) {
   pion_candidate_idxs.clear();
   static MichelMap endpoint_michels;
@@ -62,7 +62,7 @@ bool PassesCuts(CVUniverse& univ, std::vector<int>& pion_candidate_idxs,
   for (auto c : cuts) {
     univ.SetPionCandidates(GetHadIdxsFromMichels(
         endpoint_michels));  // Set the pion candidates to the universe
-    pass = pass && PassesCut(univ, c, is_mc, signal_definition,
+    pass = pass && PassesCut(univ, c, is_mc, signal_definition, params,
                              endpoint_michels, vertex_michels);
   }
 
@@ -80,7 +80,8 @@ bool PassesCuts(CVUniverse& univ, std::vector<int>& pion_candidate_idxs,
 // 3. check if W < 1.4 (signal)
 bool PassesCuts(CVUniverse& universe, std::vector<int>& pion_candidate_idxs,
                 const bool is_mc, SignalDefinition signal_definition,
-                bool& is_w_sideband, std::vector<ECuts> cuts) {
+                bool& is_w_sideband, std::vector<double> params,
+                std::vector<ECuts> cuts) {
   // is the W cut even in the cuts vector provided?
   bool do_w_cut = std::find(cuts.begin(), cuts.end(), kWexp) != cuts.end();
 
@@ -92,7 +93,7 @@ bool PassesCuts(CVUniverse& universe, std::vector<int>& pion_candidate_idxs,
 
   // check passes all but w cut
   bool passes_all_but_w_cut = PassesCuts(universe, pion_candidate_idxs, is_mc,
-                                         signal_definition, w_sideband_cuts);
+                                         signal_definition, params, w_sideband_cuts);
 
   // is w sideband = all cuts but W && W > 1.5
   is_w_sideband = passes_all_but_w_cut &&
@@ -102,7 +103,7 @@ bool PassesCuts(CVUniverse& universe, std::vector<int>& pion_candidate_idxs,
   bool passes_all_cuts = passes_all_but_w_cut;
   if (do_w_cut)
     passes_all_cuts =
-        passes_all_but_w_cut && WexpCut(universe, signal_definition);
+        passes_all_but_w_cut && WexpCut(universe, signal_definition, params);
 
   return passes_all_cuts;
 }
@@ -110,7 +111,7 @@ bool PassesCuts(CVUniverse& universe, std::vector<int>& pion_candidate_idxs,
 // NEW! Return passes_all_cuts, is_w_sideband, and pion_candidate_indices
 std::tuple<bool, bool, std::vector<int>> PassesCuts(
     CVUniverse& universe, const bool is_mc,
-    const SignalDefinition signal_definition, std::vector<ECuts> cuts) {
+    const SignalDefinition signal_definition, std::vector<double> params, std::vector<ECuts> cuts) {
   //============================================================================
   // passes all cuts but w cut
   //============================================================================
@@ -123,7 +124,7 @@ std::tuple<bool, bool, std::vector<int>> PassesCuts(
     universe.SetPionCandidates(GetHadIdxsFromMichels(endpoint_michels));
 
     passes_all_but_w_cut =
-        passes_all_but_w_cut && PassesCut(universe, c, is_mc, signal_definition,
+        passes_all_but_w_cut && PassesCut(universe, c, is_mc, signal_definition, params,
                                           endpoint_michels, vertex_michels);
   }
 
@@ -151,7 +152,7 @@ std::tuple<bool, bool, std::vector<int>> PassesCuts(
   bool passes_all_cuts = passes_all_but_w_cut;
   if (do_w_cut)
     passes_all_cuts =
-        passes_all_but_w_cut && WexpCut(universe, signal_definition);
+        passes_all_but_w_cut && WexpCut(universe, signal_definition, params);
 
   return {passes_all_cuts, is_w_sideband, pion_candidate_idxs};
 }
@@ -162,7 +163,7 @@ std::tuple<bool, bool, std::vector<int>> PassesCuts(
 
 EventCount PassedCuts(const CVUniverse& univ,
                       std::vector<int>& pion_candidate_idxs, bool is_mc,
-                      SignalDefinition signal_definition,
+                      SignalDefinition signal_definition, std::vector<double> params,
                       std::vector<ECuts> cuts) {
   pion_candidate_idxs.clear();
   static MichelMap endpoint_michels;
@@ -174,7 +175,7 @@ EventCount PassedCuts(const CVUniverse& univ,
   for (auto cu : cuts) Pass[cu] = 0;
 
   for (auto c : cuts) {
-    pass = pass && PassesCut(univ, c, is_mc, signal_definition,
+    pass = pass && PassesCut(univ, c, is_mc, signal_definition, params,
                              endpoint_michels, vertex_michels);
     if (pass) {
       Pass[c] = 1.;
@@ -189,7 +190,7 @@ EventCount PassedCuts(const CVUniverse& univ,
 //==============================================================================
 // Updates the michel containers
 bool PassesCut(const CVUniverse& univ, const ECuts cut, const bool is_mc,
-               const SignalDefinition signal_definition,
+               const SignalDefinition signal_definition, std::vector<double> params,
                MichelMap& endpoint_michels, MichelMap& vertex_michels) {
   const bool useOVMichels = false;
   if (IsPrecut(cut) && !is_mc) return true;
@@ -229,7 +230,7 @@ bool PassesCut(const CVUniverse& univ, const ECuts cut, const bool is_mc,
       return MinosMatchCut(univ) && MinosChargeCut(univ);
 
     case kWexp:
-      return WexpCut(univ, signal_definition);
+      return WexpCut(univ, signal_definition, params);
 
     case kIsoProngs:
       return IsoProngCut(univ);
@@ -315,11 +316,16 @@ bool MinosChargeCut(const CVUniverse& univ) {
   return univ.GetDouble("MasterAnaDev_minos_trk_qp") < 0.0;
 }
 
-bool WexpCut(const CVUniverse& univ, SignalDefinition signal_definition) {
+bool WexpCut(const CVUniverse& univ, SignalDefinition signal_definition, std::vector<double> params) {
   switch (signal_definition) {
     case kOnePi:
     case kNPi:
-      return univ.GetWexp() < GetWCutValue(signal_definition);
+    case kParams:
+      if (GetWCutValue(signal_definition, params) == 0) {
+        return true;
+      } else {
+        return univ.GetWexp() < GetWCutValue(signal_definition, params);
+      }
     case kOnePiNoW:
     case kNPiNoW:
       return true;

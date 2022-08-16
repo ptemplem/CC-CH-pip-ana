@@ -25,14 +25,14 @@ enum WSidebandType
 // This is separate from the question of whether we float or fix each category.
 // For that question, see the implementation of the fitter.
 WSidebandType GetWSidebandType(const CVUniverse& universe, 
-                               const SignalDefinition signal_definition, 
+                               const SignalDefinition signal_definition, std::vector<double> params, 
                                const int n_categories = 3) {
   if (n_categories != 2 && n_categories != 3)
     throw std::invalid_argument("GetWSidebandType: n_categories is 2 or 3");
 
   double Wexp_true = universe.GetWexpTrue();
 
-  if (IsSignal(universe, signal_definition))
+  if (IsSignal(universe, signal_definition, params))
     return kWSideband_Signal;
   else {
     if (Wexp_true > 1800)
@@ -91,9 +91,9 @@ enum Pi0SidebandType
 };
 
 Pi0SidebandType GetPi0SidebandType(const CVUniverse& universe, 
-                                   const SignalDefinition signal_definition) {
+                                   const SignalDefinition signal_definition, std::vector<double> params) {
   int n_pi0 = universe.GetInt("truth_N_pi0");
-  if (IsSignal(universe, signal_definition)) return kPi0Sideband_Signal;
+  if (IsSignal(universe, signal_definition, params)) return kPi0Sideband_Signal;
   else if (n_pi0 > 0) return kPi0Sideband_Pi0;
   else return kPi0Sideband_Other;
 }
