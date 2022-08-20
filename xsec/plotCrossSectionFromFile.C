@@ -48,7 +48,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
                              double w_exp = 1400., double npi = 1, double pim = 0, double pi0 = 0) {
   // Initialize params tuple
   std::vector<double> params{ w_exp, npi, pim, pi0 };
-  outdir = "/" + outdir;
+  outdir = outdir + "/";
   // Infiles
   TFile fin(xsec_inputs.c_str(), "READ");
   cout << "Reading input from " << fin.GetName() << endl;
