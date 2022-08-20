@@ -6,6 +6,7 @@ void loadMacros() {
     oldpath += path;
     gSystem->SetIncludePath(oldpath);
     gSystem->CompileMacro("makeCrossSectionMCInputs.C", "k");
+    gSystem->CompileMacro("GXSEClosure.C", "k");
     gSystem->CompileMacro("crossSectionDataFromFile.C", "k");
     gSystem->CompileMacro("plotCrossSectionFromFile.C", "k");
 }

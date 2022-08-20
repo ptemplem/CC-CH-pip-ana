@@ -18,25 +18,24 @@
 // TODO function-ify the real xsec script and use those functions.
 // Instead of copy-paste.
 //==============================================================================
-void GXSEClosure(int signal_definition_int = 0) {
+void GXSEClosure(int signal_definition_int = 0, std::string xsec_inputs = "",
+                std::string data_file_list = "data_list.txt", std::string mc_file_list = "mc_list.txt",
+                double w_exp = 1400., double npi = 1, double pim = 0, double pi0 = 0) {
+  // Initialize params tuple
+  std::vector<double> params{ w_exp, npi, pim, pi0 };
   // In and outfiles
   // TFile fin("rootfiles/MCXSecInputs_20190903.root", "READ");
-  TFile fin(
-      "/minerva/app/users/granados/cmtuser/MATAna/cc-ch-pip-ana/"
-      "MCXSecInputs_20220717_ME1A_NoSys.root",
-      "READ");
+  TFile fin(xsec_inputs.c_str(), "READ");
   cout << "Reading input from " << fin.GetName() << endl;
 
   // Set up macro utility object -- which does the systematics for us
   const char* plist = "ME1A";
-  std::string data_file_list = GetPlaylistFile(plist, false);
-  std::string mc_file_list = GetPlaylistFile(plist, true);
   // std::string mc_file_list =
   //    "/minerva/app/users/granados/cmtuser/MINERvA101/"
   //    "MINERvA-101-Cross-Section/MCME1A.txt";
   bool do_truth = false;
   bool do_systematics = true, do_grid = false;
-  CCPi::MacroUtil util(signal_definition_int, mc_file_list, data_file_list,
+  CCPi::MacroUtil util(signal_definition_int, params, mc_file_list, data_file_list,
                        plist, do_truth, do_grid, do_systematics);
 
   // Set POT
@@ -49,7 +48,7 @@ void GXSEClosure(int signal_definition_int = 0) {
   const bool do_truth_vars = true;
   std::vector<Variable*> variables =
       GetAnalysisVariables(util.m_signal_definition, do_truth_vars);
-
+  std::cout << "TAG";
   // for (auto var : variables) var->LoadMCHistsFromFile(fin,
   // util.m_error_bands);
 
@@ -67,7 +66,7 @@ void GXSEClosure(int signal_definition_int = 0) {
     // We'll be needing the true version of this variable
     Variable* reco_var = GetVar(variables, var->Name());
     Variable* true_var = GetVar(variables, var->Name() + std::string("_true"));
-
+    
     // Closure at the background subtraction. Step 1
     PlotUtils::MnvH1D* reco_sel_mc =
         (PlotUtils::MnvH1D*)reco_var->m_hists.m_selection_mc.hist->Clone(

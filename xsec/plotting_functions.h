@@ -40,7 +40,7 @@ class EventSelectionPlotInfo {
   // Constructor with Var
   EventSelectionPlotInfo(Variable* variable, float mc_pot, float data_pot,
                          bool do_frac_unc, bool do_cov_area_norm,
-                         bool include_stat, SignalDefinition signal_definition)
+                         bool include_stat, SignalDefinition signal_definition, std::string outdir)
       : m_mnv_plotter(kCCNuPionIncStyle),
         m_variable(variable),
         m_mc_pot(mc_pot),
@@ -48,7 +48,8 @@ class EventSelectionPlotInfo {
         m_do_frac_unc(do_frac_unc),
         m_do_cov_area_norm(do_cov_area_norm),
         m_include_stat(include_stat),
-        m_signal_definition(signal_definition) {
+        m_signal_definition(signal_definition),
+        m_outdir(outdir) {
     m_do_frac_unc_str = m_do_frac_unc ? "Frac" : "Abs";
     m_do_cov_area_norm_str = m_do_cov_area_norm ? "CovAreaNorm" : "";
   }
@@ -56,7 +57,7 @@ class EventSelectionPlotInfo {
   // Constructor without var
   EventSelectionPlotInfo(float mc_pot, float data_pot, bool do_frac_unc,
                          bool do_cov_area_norm, bool include_stat,
-                         SignalDefinition signal_definition)
+                         SignalDefinition signal_definition, std::string outdir)
       : m_mnv_plotter(kCCNuPionIncStyle),
         m_variable(nullptr),
         m_mc_pot(mc_pot),
@@ -64,7 +65,8 @@ class EventSelectionPlotInfo {
         m_do_frac_unc(do_frac_unc),
         m_do_cov_area_norm(do_cov_area_norm),
         m_include_stat(include_stat),
-        m_signal_definition(signal_definition) {
+        m_signal_definition(signal_definition),
+        m_outdir(outdir) {
     m_do_frac_unc_str = m_do_frac_unc ? "Frac" : "Abs";
     m_do_cov_area_norm_str = m_do_cov_area_norm ? "CovAreaNorm" : "";
   }
@@ -78,6 +80,7 @@ class EventSelectionPlotInfo {
   bool m_do_cov_area_norm;
   bool m_include_stat;
   SignalDefinition m_signal_definition;
+  std::string m_outdir;
   std::string m_do_frac_unc_str;
   std::string m_do_cov_area_norm_str;
 
@@ -246,7 +249,7 @@ void Plot_ErrorGroup(EventSelectionPlotInfo p, PlotUtils::MnvH1D* h,
   p.SetTitle(tag);
 
   std::string outfile_name =
-      Form("ErrorSummary_%s_%s_%s_%s_%s_%s", tag.c_str(),
+      Form("%sErrorSummary_%s_%s_%s_%s_%s_%s", p.m_outdir.c_str(), tag.c_str(),
            p.m_variable->Name().c_str(), p.m_do_frac_unc_str.c_str(),
            p.m_do_cov_area_norm_str.c_str(),
            GetSignalFileTag(p.m_signal_definition).c_str(),
@@ -365,7 +368,7 @@ void PlotVar_Selection(EventSelectionPlotInfo p, double ymax = -1.,
   std::string bwn_str = do_bin_width_norm ? "_BWN" : "";
 
   std::string outfile_name =
-      Form("Selection_%s_%s_%s%s%s%s", p.m_variable->Name().c_str(),
+      Form("%sSelection_%s_%s_%s%s%s%s", p.m_outdir.c_str(), p.m_variable->Name().c_str(),
            p.m_do_cov_area_norm_str.c_str(),
            GetSignalFileTag(p.m_signal_definition).c_str(), logy_str.c_str(),
            bg_str.c_str(), bwn_str.c_str());
@@ -1014,7 +1017,7 @@ void PlotWSidebandFit_ErrorGroup(EventSelectionPlotInfo p,
   p.SetTitle("W Sideband Fit");
 
   std::string outfile_name =
-      Form("ErrorSummary_%s_%s_%s_%s_%s", tag.c_str(),
+      Form("%sErrorSummary_%s_%s_%s_%s_%s", p.m_outdir.c_str(), tag.c_str(),
            p.m_do_frac_unc_str.c_str(), p.m_do_cov_area_norm_str.c_str(),
            GetSignalFileTag(p.m_signal_definition).c_str(),
            error_group_name.c_str());
@@ -1575,9 +1578,9 @@ void PlotMC(PlotUtils::MnvH1D* hist, EventSelectionPlotInfo p, std::string tag,
 }
 
 void PlotRatio(PlotUtils::MnvH1D* num, PlotUtils::MnvH1D* denom, std::string v,
-               double norm, std::string l, bool fixRange) {
+               double norm, std::string l, bool fixRange, std::string outdir = "") {
   // char* vchar = &v[0];
-  std::string label(Form("Ratio_%s", v.c_str()));
+  std::string label(Form("%sRatio_%s", outdir.c_str(), v.c_str()));
   // char* labchar = &label[0];
   const bool drawSysLines = false;
   const bool drawOneLine = true;
@@ -1713,7 +1716,7 @@ TH2D* RowNormalize(TH2D* h) {
   return tmp;
 }
 
-void PlotMigration_AbsoluteBins(PlotUtils::MnvH2D* hist, std::string name) {
+void PlotMigration_AbsoluteBins(PlotUtils::MnvH2D* hist, std::string name, std::string outdir) {
   TCanvas c("c1", "c1");
   PlotUtils::MnvPlotter mnv_plotter(PlotUtils::kCCNuPionIncStyle);
   mnv_plotter.SetRedHeatPalette();
@@ -1721,10 +1724,10 @@ void PlotMigration_AbsoluteBins(PlotUtils::MnvH2D* hist, std::string name) {
   gStyle->SetHistMinimumZero(kFALSE);
   mnv_plotter.DrawNormalizedMigrationHistogram(hist, draw_as_matrix);
   c.Update();
-  c.Print(Form("Migration_AbsBins_%s.png", name.c_str()));
+  c.Print(Form("%sMigration_AbsBins_%s.png", outdir.c_str(), name.c_str()));
 }
 
-void PlotMigration_VariableBins(PlotUtils::MnvH2D* hist, std::string name) {
+void PlotMigration_VariableBins(PlotUtils::MnvH2D* hist, std::string name, std::string outdir) {
   TGaxis::SetExponentOffset(-0.035, -0.048, "x");
   TH2D* htmp = GetHistWithUnderOverFlow(hist);
   TH2D* htmp2 = RowNormalize(htmp);
@@ -1740,7 +1743,7 @@ void PlotMigration_VariableBins(PlotUtils::MnvH2D* hist, std::string name) {
   // htmp2->SetMarkerSize(2);
   // htmp2->Draw("colz text");
   c.Update();
-  c.Print(Form("Migration_VarBins_%s.png", name.c_str()));
+  c.Print(Form("%sMigration_VarBins_%s.png", outdir.c_str(), name.c_str()));
   // c.SetLogz();
   // c.Update();
   // c.Print("WMigrationMatrix_Wbins_logz.png");

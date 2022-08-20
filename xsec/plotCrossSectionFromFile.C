@@ -44,9 +44,11 @@ void SetPOT(TFile& fin, CCPi::MacroUtil& util) {
 void plotCrossSectionFromFile(int signal_definition_int = 0,
                               int plot_errors = 1, std::string xsec_inputs = "",
                               std::string data_file_list = "data_list.txt", std::string mc_file_list = "mc_list.txt",
+                              std::string outdir = "",
                              double w_exp = 1400., double npi = 1, double pim = 0, double pi0 = 0) {
   // Initialize params tuple
   std::vector<double> params{ w_exp, npi, pim, pi0 };
+  outdir = "/" + outdir;
   // Infiles
   TFile fin(xsec_inputs.c_str(), "READ");
   cout << "Reading input from " << fin.GetName() << endl;
@@ -214,7 +216,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
         std::cout << "Norm = " << Norm << "\n";
         //	Norm = 1;
         //        std::cout << "Norm = " << Norm << "\n";
-        PlotRatio(Num, Denom, var->Name(), Norm, s, fixRange);
+        PlotRatio(Num, Denom, var->Name(), Norm, s, fixRange, outdir);
       }
     }
   }
@@ -229,7 +231,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
       do_cov_area_norm = false;
       EventSelectionPlotInfo plot_info(var, util.m_mc_pot, util.m_data_pot,
                                        do_frac_unc, do_cov_area_norm,
-                                       include_stat, util.m_signal_definition);
+                                       include_stat, util.m_signal_definition, outdir);
 
       bool do_bin_width_norm = true, do_log_scale = false, do_bg = true;
       bool do_tuned_bg = false;
@@ -262,7 +264,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
 
       const EventSelectionPlotInfo plot_info(
           var, util.m_mc_pot, util.m_data_pot, do_frac_unc, do_cov_area_norm,
-          include_stat, util.m_signal_definition);
+          include_stat, util.m_signal_definition, outdir);
 
       // Efficiency
       if (var->m_is_true) {
@@ -279,7 +281,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
         bool do_log_scale = false;
         bool do_bg = true;
         bool do_tuned_bg = true;
-        PlotMC(eff, plot_info, Form("Efficiency_%s", var->Name().c_str()),
+        PlotMC(eff, plot_info, Form(outdir.c_str(), "Efficiency_%s", var->Name().c_str()),
                0.075, "Efficiency");
         if (plot_errors) PlotEfficiency_ErrorSummary(plot_info);
       }
@@ -288,8 +290,8 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
       if (!var->m_is_true) {
         PlotUtils::MnvH2D* mig =
             (PlotUtils::MnvH2D*)var->m_hists.m_migration.hist->Clone(uniq());
-        PlotMigration_AbsoluteBins(mig, var->Name());
-        PlotMigration_VariableBins(mig, var->Name());
+        PlotMigration_AbsoluteBins(mig, var->Name(), outdir);
+        PlotMigration_VariableBins(mig, var->Name(), outdir);
       }
     }
   }
@@ -304,7 +306,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
 
       EventSelectionPlotInfo plot_info(var, util.m_mc_pot, util.m_data_pot,
                                        do_frac_unc, do_cov_area_norm,
-                                       include_stat, util.m_signal_definition);
+                                       include_stat, util.m_signal_definition, outdir);
 
       double ymax = -1.;
       bool do_log_scale = false;
@@ -316,7 +318,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
       do_tuned_bg = false;
       if (plot_errors) PlotBG_ErrorSummary(plot_info, do_tuned_bg);
 
-      Plot_BGSub(plot_info, ".", ymax, do_log_scale, do_bin_width_norm);
+      Plot_BGSub(plot_info, outdir, ymax, do_log_scale, do_bin_width_norm);
 
       if (plot_errors) PlotBGSub_ErrorSummary(plot_info);
     }
@@ -330,7 +332,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
 
     EventSelectionPlotInfo plot_info(util.m_mc_pot, util.m_data_pot,
                                      do_frac_unc, do_cov_area_norm,
-                                     include_stat, util.m_signal_definition);
+                                     include_stat, util.m_signal_definition, outdir);
 
     PlotUtils::MnvH1D* loW_fit_wgt = (PlotUtils::MnvH1D*)fin.Get("loW_fit_wgt");
     PlotUtils::MnvH1D* midW_fit_wgt =
@@ -360,10 +362,10 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
 
       EventSelectionPlotInfo plot_info(reco_var, util.m_mc_pot, util.m_data_pot,
                                        do_frac_unc, do_cov_area_norm,
-                                       include_stat, util.m_signal_definition);
+                                       include_stat, util.m_signal_definition, outdir);
 
       Plot_Unfolded(plot_info, reco_var->m_hists.m_unfolded,
-                    true_var->m_hists.m_effnum.hist);
+                    true_var->m_hists.m_effnum.hist, outdir);
       if (plot_errors) PlotUnfolded_ErrorSummary(plot_info);
     }
   }
@@ -383,7 +385,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
 
       EventSelectionPlotInfo plot_info(reco_var, util.m_mc_pot, util.m_data_pot,
                                        do_frac_unc, do_cov_area_norm,
-                                       include_stat, util.m_signal_definition);
+                                       include_stat, util.m_signal_definition, outdir);
 
       PlotUtils::MnvH1D* m_mc_cross_section = (PlotUtils::MnvH1D*)fin.Get(
           Form("mc_cross_section_%s", reco_var->Name().c_str()));
@@ -396,7 +398,7 @@ void plotCrossSectionFromFile(int signal_definition_int = 0,
       // std::cout << reco_var->Name() << "\n";
 
       Plot_CrossSection(plot_info, reco_var->m_hists.m_cross_section,
-                        m_mc_cross_section);
+                        m_mc_cross_section, outdir);
       if (plot_errors)
         PlotCrossSection_ErrorSummary(
             plot_info);  // Adds chi2 label and prints out assumed binning.
